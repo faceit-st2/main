@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CHEMK</title>
+  <style>
+    @font-face {
+      font-family: "Akedopikuseru";
+      src: url("Akedopikuseru-Regular.otf") format("opentype");
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    :root {
+      color-scheme: dark;
+      --bg: #030703;
+      --panel: rgba(0, 0, 0, 0.18);
+      --border: rgba(76, 255, 112, 0.18);
+      --text: #9eff8f;
+      --accent: #4cff70;
+      --accent-dark: #0c2c0c;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+      width: 100%;
+      background: radial-gradient(circle at 10% 10%, rgba(76, 255, 112, 0.16), transparent 18%),
+        radial-gradient(circle at 85% 15%, rgba(0, 255, 128, 0.09), transparent 12%),
+        linear-gradient(180deg, #061206 0%, #020402 100%);
+      color: var(--text);
+      font-family: "Akedopikuseru";
+      image-rendering: pixelated;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 24px 24px, 24px 24px;
+      pointer-events: none;
+      opacity: 0.4;
+      z-index: 0;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      min-height: 84px;
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      background: var(--panel);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+      z-index: 10;
+    }
+
+    .logo {
+      position: relative;
+      width: 96px;
+      height: 96px;
+      display: grid;
+      place-items: center;
+      background: transparent;
+      overflow: visible;
+    }
+
+    .logo svg {
+      width: 88px;
+      height: 88px;
+      filter: drop-shadow(0 0 18px rgba(76,255,112,0.5)) drop-shadow(0 0 28px rgba(76,255,112,0.22));
+    }
+
+    .logo svg .glitch-layer {
+      opacity: 1;
+      transform-origin: center center;
+      fill: #8cff7d !important;
+      stroke: rgba(255,255,255,0.16);
+      stroke-width: 0.8px;
+    }
+
+    .logo svg .glitch-layer:nth-child(2) {
+      animation: svgGlitchA 2.6s infinite linear;
+    }
+
+    .logo svg .glitch-layer:nth-child(3) {
+      animation: svgGlitchB 3.2s infinite linear;
+    }
+
+    .brand-text {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .brand-name {
+      position: relative;
+      font-family: "Akedopikuseru";
+      font-size: 3rem;
+      font-weight: 900;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #4cff70;
+      text-shadow: 0 0 8px rgba(76,255,112,0.22);
+      line-height: 1;
+    }
+
+    .header-search-container {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      position: relative;
+      transition: width 0.2s ease;
+      flex-direction: row-reverse;
+    }
+
+    .header-search {
+      width: 66px;
+      height: 66px;
+      display: grid;
+      place-items: center;
+      border: 3px solid rgba(76,255,112,0.36);
+      background: rgba(0,0,0,0.28);
+      color: #4cff70;
+      cursor: pointer;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+      padding: 0;
+      line-height: 0;
+      border-radius: 0;
+    }
+
+    .header-search svg {
+      width: 32px;
+      height: 32px;
+      display: block;
+      fill: #4cff70;
+    }
+
+    .header-search-input {
+      width: 0;
+      opacity: 0;
+      border: 3px solid rgba(76,255,112,0.36);
+      background: rgba(0,0,0,0.28);
+      color: #c8f8b2;
+      font-family: "Akedopikuseru";
+      font-size: 0.95rem;
+      padding: 18px 16px;
+      transition: width 0.25s ease, opacity 0.25s ease, margin 0.25s ease;
+      outline: none;
+      overflow: hidden;
+      white-space: nowrap;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+      pointer-events: none;
+      line-height: 1;
+      border-radius: 0;
+    }
+
+    .header-search-container.search-active .header-search-input {
+      width: 220px;
+      opacity: 1;
+      pointer-events: auto;
+      margin-right: 8px;
+    }
+
+    .header-search:hover,
+    .header-menu:hover {
+      background: rgba(0,0,0,0.4);
+      box-shadow: 0 0 18px rgba(76,255,112,0.18), inset 0 0 0 1px rgba(255,255,255,0.08);
+    }
+
+    .group-badge {
+      font-family: "Akedopikuseru";
+      font-size: 0.95rem;
+      letter-spacing: 0.24em;
+      color: rgba(158,255,143,0.94);
+      text-transform: uppercase;
+      opacity: 0.9;
+    }
+
+    .group-badge.hidden {
+      display: none;
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+      margin-left: auto;
+    }
+
+    .header-menu {
+      width: 66px;
+      height: 66px;
+      display: grid;
+      place-items: center;
+      border: 3px solid rgba(76,255,112,0.36);
+      background: rgba(0,0,0,0.28);
+      cursor: pointer;
+      position: relative;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+      color: #4cff70;
+    }
+
+    .header-menu svg {
+      width: 30px;
+      height: 30px;
+      display: block;
+      fill: currentColor;
+    }
+
+    .header-menu-panel {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      min-width: 180px;
+      padding: 14px;
+      display: none;
+      gap: 10px;
+      background: rgba(0,0,0,0.96);
+      border: 3px solid rgba(76,255,112,0.28);
+      box-shadow: 0 0 28px rgba(0,255,112,0.16);
+      z-index: 20;
+    }
+
+    .header-menu-panel.visible {
+      display: grid;
+    }
+
+    .brand-name::before,
+    .brand-name::after {
+      content: attr(data-text);
+      position: absolute;
+      inset: 0;
+      color: #4cff70;
+      opacity: 0.65;
+      mix-blend-mode: screen;
+    }
+
+    .brand-name::before {
+      transform: translate(-2px, -1px);
+      clip-path: inset(0 0 58% 0);
+      animation: textGlitchA 2.3s infinite linear;
+    }
+
+    .brand-name::after {
+      transform: translate(1px, 2px);
+      clip-path: inset(52% 0 0 0);
+      animation: textGlitchB 2.9s infinite linear;
+      opacity: 0.55;
+    }
+
+    .auth-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 160px 20px 40px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .dashboard {
+      min-height: calc(100vh - 84px);
+      display: flex;
+      justify-content: center;
+      padding: 160px 32px 40px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .dashboard-layout {
+      display: grid;
+      grid-template-columns: minmax(240px, 360px) minmax(0, 1fr);
+      gap: 24px;
+      width: 100%;
+      max-width: none;
+      min-height: calc(100vh - 164px);
+      align-items: start;
+    }
+
+    .dashboard-sidebar {
+      display: grid;
+      align-content: start;
+      gap: 14px;
+      background: rgba(0,0,0,0.92);
+      border: 4px solid rgba(76,255,112,0.28);
+      padding: 24px;
+      box-shadow: 0 0 40px rgba(0,255,112,0.1);
+      min-height: calc(100vh - 164px);
+      min-width: 320px;
+      max-width: 360px;
+      width: auto;
+      border-radius: 18px;
+    }
+
+    .dashboard-sidebar.hidden {
+      display: none;
+    }
+
+    .dashboard-files-panel {
+      display: grid;
+      gap: 14px;
+      align-content: start;
+      background: rgba(0,0,0,0.92);
+      border: 4px solid rgba(76,255,112,0.28);
+      padding: 24px;
+      box-shadow: 0 0 40px rgba(0,255,112,0.1);
+      min-height: calc(100vh - 164px);
+      border-radius: 18px;
+    }
+
+    .dashboard-content {
+      display: grid;
+      align-content: start;
+      min-height: calc(100vh - 164px);
+    }
+
+    .dashboard-files-title {
+      font-family: "Akedopikuseru";
+      color: #9eff8f;
+      font-size: 0.95rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+    }
+
+    .dashboard-files-list {
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
+
+    .games-menu-list {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      align-content: start;
+      justify-items: stretch;
+      width: 100%;
+    }
+
+    .game-card {
+      display: flex;
+      flex-direction: column;
+      background: rgba(0,0,0,0.18);
+      border: 1px solid rgba(76,255,112,0.18);
+      border-radius: 18px;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      min-height: 240px;
+      transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+    }
+
+    .game-card:hover {
+      transform: translateY(-2px);
+      background: rgba(0,0,0,0.28);
+      border-color: rgba(76,255,112,0.35);
+    }
+
+    .game-card-image {
+      height: 140px;
+      width: 100%;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .game-card-title {
+      padding: 16px 14px;
+      font-family: "Akedopikuseru";
+      font-size: 1rem;
+      letter-spacing: 0.08em;
+      text-align: center;
+      color: #d2ffb9;
+      line-height: 1.3;
+      flex: 1;
+      display: grid;
+      place-items: center;
+    }
+
+    .dashboard-files-panel .sidebar-item {
+      border-color: rgba(76,255,112,0.18);
+      background: rgba(0,0,0,0.22);
+    }
+
+    .dashboard-files-panel .sidebar-item:hover {
+      background: rgba(0,0,0,0.36);
+    }
+
+    .sidebar-section {
+      display: grid;
+      gap: 6px;
+      align-content: start;
+    }
+
+    .sidebar-section-title {
+      font-family: "Akedopikuseru";
+      color: #9eff8f;
+      font-size: 0.85rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      margin: 0 0 6px 0;
+      padding: 0;
+    }
+
+    .sidebar-button {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid rgba(76,255,112,0.22);
+      background: rgba(0,0,0,0.18);
+      color: #d2ffb9;
+      font-family: "Akedopikuseru";
+      font-size: 0.92rem;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: none;
+      justify-content: flex-start;
+      border-radius: 12px;
+      transition: transform 0.16s ease, background 0.16s ease, border-color 0.16s ease;
+      min-height: 64px;
+      line-height: 1.2;
+    }
+
+    .sidebar-button:hover {
+      transform: translateX(2px);
+      background: rgba(0,0,0,0.42);
+      border-color: rgba(76,255,112,0.45);
+    }
+
+    .sidebar-button:hover {
+      transform: translateX(2px);
+      background: linear-gradient(180deg, rgba(0,0,0,0.38), rgba(0,0,0,0.60));
+      border-color: rgba(76,255,112,0.4);
+    }
+
+    .sidebar-button.active,
+    .sidebar-item.active {
+      background: rgba(76,255,112,0.14);
+      border-color: rgba(76,255,112,0.6);
+      color: #ecffde;
+    }
+
+    .sidebar-button svg,
+    .sidebar-item svg {
+      width: 28px;
+      height: 28px;
+      display: block;
+      fill: currentColor;
+    }
+
+    .sidebar-list {
+      display: grid;
+      gap: 10px;
+      align-content: start;
+      margin-top: 0;
+    }
+
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      border: 1px solid rgba(76,255,112,0.15);
+      background: rgba(0,0,0,0.14);
+      color: #c8f8b2;
+      font-family: "Akedopikuseru";
+      font-size: 0.95rem;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.2s ease, border-color 0.2s ease, transform 0.18s ease;
+      min-height: 64px;
+      line-height: 1.2;
+      width: 100%;
+      box-shadow: none;
+    }
+
+    .sidebar-item:hover {
+      border-color: rgba(76,255,112,0.36);
+      background: rgba(0,0,0,0.44);
+      transform: translateX(2px);
+    }
+
+    .sidebar-item:hover {
+      border-color: rgba(76,255,112,0.36);
+      background: rgba(0,0,0,0.48);
+    }
+
+    .sidebar-item svg {
+      width: 18px;
+      height: 18px;
+      fill: #4cff70;
+    }
+
+    .favorites-files {
+      display: none;
+      gap: 10px;
+    }
+
+    .favorites-files.visible {
+      display: grid;
+    }
+
+    .favorites-files .sidebar-item {
+      padding-left: 14px;
+      border-color: rgba(76,255,112,0.1);
+    }
+
+    .dashboard-text {
+      font-family: "Akedopikuseru";
+      color: rgba(158,255,143,0.82);
+      font-size: 1rem;
+      line-height: 1.6;
+      max-width: 680px;
+      margin-top: 14px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .auth-panel {
+      width: min(760px, 100%);
+      background: rgba(0, 0, 0, 0.96);
+      border: 4px solid rgba(76, 255, 112, 0.28);
+      padding: 40px 32px 34px;
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,0.05), inset 8px 0 0 rgba(76,255,112,0.06), inset -8px 0 0 rgba(76,255,112,0.06), inset 0 8px 0 rgba(76,255,112,0.06), inset 0 -8px 0 rgba(76,255,112,0.06), 0 0 48px rgba(0,255,112,0.1);
+      backdrop-filter: blur(24px);
+      position: relative;
+      overflow: hidden;
+      background-image: linear-gradient(rgba(76,255,112,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(76,255,112,0.08) 1px, transparent 1px);
+      background-size: 16px 16px, 16px 16px;
+      image-rendering: pixelated;
+    }
+
+    .auth-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 10px, rgba(76,255,112,0.08) 11px, transparent 12px), repeating-linear-gradient(90deg, transparent, transparent 10px, rgba(76,255,112,0.08) 11px, transparent 12px);
+      pointer-events: none;
+      opacity: 0.25;
+    }
+
+    .auth-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border: 2px solid rgba(76,255,112,0.18);
+      pointer-events: none;
+      opacity: 0.35;
+    }
+
+    .auth-panel > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .auth-logo {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 22px;
+    }
+
+    .auth-title {
+      text-align: center;
+      font-family: "Akedopikuseru";
+      font-size: 1.1rem;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: #4cff70;
+      margin-bottom: 22px;
+    }
+
+    .auth-form,
+    .auth-register {
+      display: grid;
+      gap: 16px;
+    }
+
+    .form-label {
+      font-family: "Akedopikuseru";
+      font-size: 0.8rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: rgba(158,255,143,0.88);
+    }
+
+    .form-input,
+    .select {
+      width: 100%;
+      background: rgba(0,0,0,0.64);
+      border: 3px solid rgba(76,255,112,0.28);
+      color: #c8f8b2;
+      font-family: "Akedopikuseru";
+      font-size: 1rem;
+      padding: 18px 14px;
+      border-radius: 0;
+      outline: none;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05), inset 6px 0 0 rgba(76,255,112,0.05), inset -6px 0 0 rgba(76,255,112,0.05), inset 0 6px 0 rgba(76,255,112,0.05), inset 0 -6px 0 rgba(76,255,112,0.05);
+      image-rendering: pixelated;
+    }
+
+    .form-input::placeholder {
+      color: rgba(158,255,143,0.42);
+    }
+
+    .button {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      padding: 18px 22px;
+      border-radius: 0;
+      border: 3px solid rgba(76,255,112,0.34);
+      background: rgba(0, 10, 0, 0.94);
+      color: #4cff70;
+      font-family: "Akedopikuseru";
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.24em;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(76,255,112,0.16), inset 6px 0 0 rgba(76,255,112,0.05), inset -6px 0 0 rgba(76,255,112,0.05), inset 0 6px 0 rgba(76,255,112,0.05), inset 0 -6px 0 rgba(76,255,112,0.05);
+      image-rendering: pixelated;
+    }
+
+    .button.secondary {
+      background: rgba(0,0,0,0.4);
+      border-style: dashed;
+      color: rgba(158,255,143,0.96);
+      box-shadow: inset 0 0 0 1px rgba(76,255,112,0.12);
+    }
+
+    .register-toggle {
+      color: #8dff7a;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      font-family: "Akedopikuseru";
+      font-size: 0.95rem;
+      cursor: pointer;
+      text-shadow: 0 0 4px rgba(76,255,112,0.2);
+      padding: 12px 0;
+      image-rendering: pixelated;
+      width: fit-content;
+    }
+
+    .register-panel {
+      padding: 0;
+      background: transparent;
+      border: none;
+      display: none;
+      gap: 14px;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .register-panel.visible {
+      display: grid;
+    }
+
+    .register-actions {
+      display: grid;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .register-actions .button.primary {
+      width: 100%;
+    }
+
+    .register-return {
+      color: #8dff7a;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      font-family: "Akedopikuseru";
+      font-size: 0.95rem;
+      cursor: pointer;
+      text-shadow: 0 0 4px rgba(76,255,112,0.2);
+      padding: 12px 0;
+      image-rendering: pixelated;
+      width: fit-content;
+      background: transparent;
+      border: none;
+      text-decoration: none;
+      justify-self: start;
+    }
+
+    .register-title {
+      font-family: "Akedopikuseru";
+      font-size: 0.85rem;
+      color: #8dff7a;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+    }
+
+    @keyframes glitchA {
+      0%,100% { transform: translate(-3px,-3px); clip-path: inset(0 0 0 0); }
+      25% { transform: translate(2px,-2px); clip-path: inset(0 0 12px 0); }
+      50% { transform: translate(-2px,2px); clip-path: inset(10px 0 0 0); }
+      75% { transform: translate(3px,1px); clip-path: inset(0 0 0 10px); }
+    }
+
+    @keyframes glitchB {
+      0%,100% { transform: translate(3px,3px); clip-path: inset(0 0 0 0); }
+      20% { transform: translate(-2px,2px); clip-path: inset(12px 0 0 0); }
+      45% { transform: translate(1px,-3px); clip-path: inset(0 0 10px 0); }
+      70% { transform: translate(-1px,1px); clip-path: inset(0 10px 0 0); }
+    }
+
+    @keyframes svgGlitchA {
+      0%,100% { transform: translate(-1px, 0); }
+      20% { transform: translate(2px, -1px); }
+      45% { transform: translate(-1px, 1px); }
+      70% { transform: translate(1px, -1px); }
+    }
+
+    @keyframes svgGlitchB {
+      0%,100% { transform: translate(1px, 1px); }
+      20% { transform: translate(-1px, 2px); }
+      45% { transform: translate(1px, -1px); }
+      70% { transform: translate(-1px, 0); }
+    }
+
+    @keyframes textGlitchA {
+      0%, 100% { clip-path: inset(0 0 58% 0); transform: translate(-2px, -1px); }
+      25% { clip-path: inset(0 0 64% 0); transform: translate(-1px, -0.4px); }
+      50% { clip-path: inset(0 0 52% 0); transform: translate(-2px, 0.8px); }
+      75% { clip-path: inset(0 0 60% 0); transform: translate(-1.4px, -0.2px); }
+    }
+
+    @keyframes textGlitchB {
+      0%, 100% { clip-path: inset(52% 0 0 0); transform: translate(1px, 2px); }
+      20% { clip-path: inset(58% 0 0 0); transform: translate(1px, 0.2px); }
+      45% { clip-path: inset(50% 0 0 0); transform: translate(1.4px, 1px); }
+      70% { clip-path: inset(56% 0 0 0); transform: translate(0.8px, 1.4px); }
+    }
+
+    @keyframes scanline {
+      0% { background-position: 0 0; }
+      100% { background-position: 0 24px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo" aria-label="CHEMK logo">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <g>
+          <path class="glitch-layer" d="M29.29,0 H70.71 L100,29.29 V70.71 L70.71,100 H29.29 L0,70.71 V29.29 Z M34,34 H66 V66 H34 Z" fill="#4cff70" fill-rule="evenodd" />
+          <path class="glitch-layer" d="M29.29,0 H70.71 L100,29.29 V70.71 L70.71,100 H29.29 L0,70.71 V29.29 Z M34,34 H66 V66 H34 Z" fill="#4cff70" fill-rule="evenodd" />
+          <path class="glitch-layer" d="M29.29,0 H70.71 L100,29.29 V70.71 L70.71,100 H29.29 L0,70.71 V29.29 Z M34,34 H66 V66 H34 Z" fill="#4cff70" fill-rule="evenodd" />
+        </g>
+      </svg>
+    </div>
+    <div class="brand-text">
+      <div class="brand-name" data-text="CHEMK">CHEMK</div>
+      <div class="group-badge hidden" id="group-badge">Группа C3-25</div>
+    </div>
+    <div class="header-controls">
+      <div class="header-search-container" id="header-search-container">
+        <button type="button" class="header-search" id="search-button" aria-label="Поиск">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" id="Interface-Essential-Search-1--Streamline-Pixel" aria-hidden="true">
+            <g>
+              <path d="m24.38 19.81 -1.53 0 0 3.05 -3.04 0 0 1.52 -3.05 0 0 1.52 4.57 0 0 1.53 1.52 0 0 1.52 1.53 0 0 1.53 1.52 0 0 1.52 1.53 0 0 -1.52 1.52 0 0 -1.53 1.52 0 0 -1.52 1.53 0 0 -1.53 -1.53 0 0 -1.52 -1.52 0 0 -1.52 -1.52 0 0 -1.53 -1.53 0 0 -4.57 -1.52 0 0 3.05z" fill="currentColor" stroke-width="1"></path>
+              <path d="M25.9 10.67h1.53v6.09H25.9Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M24.38 7.62h1.52v3.05h-1.52Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M22.85 4.57h1.53v3.05h-1.53Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M21.33 12.19h1.52v3.05h-1.52Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M19.81 9.14h1.52v3.05h-1.52Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M19.81 3.05h3.04v1.52h-3.04Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M16.76 7.62h3.05v1.52h-3.05Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M16.76 1.52h3.05v1.53h-3.05Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M13.71 6.1h3.05v1.52h-3.05Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M10.66 25.9h6.1v1.53h-6.1Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M10.66 0h6.1v1.52h-6.1Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M7.62 24.38h3.04v1.52H7.62Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M7.62 1.52h3.04v1.53H7.62Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M4.57 22.86h3.05v1.52H4.57Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M4.57 3.05h3.05v1.52H4.57Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M3.05 19.81h1.52v3.05H3.05Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M3.05 4.57h1.52v3.05H3.05Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M1.52 16.76h1.53v3.05H1.52Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M1.52 7.62h1.53v3.05H1.52Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M0 10.67h1.52v6.09H0Z" fill="currentColor" stroke-width="1"></path>
+            </g>
+          </svg>
+        </button>
+        <input id="header-search-input" class="header-search-input" type="text" placeholder="Поиск" />
+      </div>
+      <div class="header-menu hidden" id="header-menu" aria-label="Меню пользователя" title="Меню">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" id="Interface-Essential-Cog-Double--Streamline-Pixel" aria-hidden="true">
+          <g>
+            <path d="m28.95 7.62 0 1.52 1.53 0 0 1.53 -1.53 0 0 1.52 3.05 0 0 -4.57 -3.05 0z" fill="currentColor" stroke-width="1"></path>
+            <path d="M28.95 13.71h1.53v1.53h-1.53Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M28.95 4.57h1.53v1.52h-1.53Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M27.43 15.24h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M27.43 12.19h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M27.43 6.09h1.52v1.53h-1.52Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M27.43 3.05h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M25.91 16.76h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M25.91 1.52h1.52v1.53h-1.52Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M24.38 15.24h1.53v1.52h-1.53Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M24.38 3.05h1.53v1.52h-1.53Z" fill="currentColor" stroke-width="1"></path>
+            <path d="m19.81 0 0 3.05 1.53 0 0 -1.53 1.52 0 0 1.53 1.52 0 0 -3.05 -4.57 0z" fill="currentColor" stroke-width="1"></path>
+            <path d="M21.34 25.9h1.52v1.53h-1.52Z" fill="currentColor" stroke-width="1"></path>
+            <path d="m19.81 16.76 0 1.52 3.05 0 0 3.05 -3.05 0 0 1.53 4.57 0 0 -6.1 -4.57 0z" fill="currentColor" stroke-width="1"></path>
+            <path d="M19.81 27.43h1.53v1.52h-1.53Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M19.81 24.38h1.53v1.52h-1.53Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M19.81 13.71h1.53v1.53h-1.53Z" fill="currentColor" stroke-width="1"></path>
+            <path d="m19.81 12.19 1.53 0 0 1.52 3.04 0 0 -1.52 1.53 0 0 -4.57 -1.53 0 0 1.52 -1.52 0 0 -1.52 1.52 0 0 -1.53 -4.57 0 0 1.53 -1.52 0 0 3.05 1.52 0 0 1.52z" fill="currentColor" stroke-width="1"></path>
+            <path d="M18.29 28.95h1.52v1.53h-1.52Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M18.29 22.86h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M18.29 15.24h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M18.29 3.05h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M16.76 27.43h1.53v1.52h-1.53Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M16.76 10.67h1.53v1.52h-1.53Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M16.76 1.52h1.53v1.53h-1.53Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M15.24 25.9h1.52v1.53h-1.52Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M15.24 18.28h1.52v3.05h-1.52Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M15.24 12.19h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M15.24 3.05h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path>
+            <path d="m13.72 30.48 -3.05 0 0 -3.05 -1.52 0 0 4.57 6.09 0 0 -4.57 -1.52 0 0 3.05z" fill="currentColor" stroke-width="1"></path>
+            <path d="M13.72 21.33h1.52v1.53h-1.52Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M13.72 16.76h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M13.72 4.57h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M10.67 15.24h3.05v1.52h-3.05Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M10.67 22.86h3.05v1.52h-3.05Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M9.15 21.33h1.52v1.53H9.15Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M9.15 16.76h1.52v1.52H9.15Z" fill="currentColor" stroke-width="1"></path>
+            <path d="m10.67 9.14 3.05 0 0 3.05 1.52 0 0 -4.57 -6.09 0 0 4.57 1.52 0 0 -3.05z" fill="currentColor" stroke-width="1"></path>
+            <path d="M7.62 25.9h1.53v1.53H7.62Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M7.62 18.28h1.53v3.05H7.62Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M7.62 12.19h1.53v1.52H7.62Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M6.1 27.43h1.52v1.52H6.1Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M6.1 10.67h1.52v1.52H6.1Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M4.57 28.95H6.1v1.53H4.57Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M4.57 22.86H6.1v1.52H4.57Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M4.57 15.24H6.1v1.52H4.57Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M4.57 9.14H6.1v1.53H4.57Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M3.05 27.43h1.52v1.52H3.05Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M3.05 24.38h1.52v1.52H3.05Z" fill="currentColor" stroke-width="1"></path>
+            <path d="m1.53 21.33 0 -3.05 3.04 0 0 -1.52 -4.57 0 0 6.1 4.57 0 0 -1.53 -3.04 0z" fill="currentColor" stroke-width="1"></path>
+            <path d="M3.05 13.71h1.52v1.53H3.05Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M3.05 10.67h1.52v1.52H3.05Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M1.53 25.9h1.52v1.53H1.53Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M1.53 12.19h1.52v1.52H1.53Z" fill="currentColor" stroke-width="1"></path>
+          </g>
+        </svg>
+      </div>
+      <div class="header-menu-panel" id="header-menu-panel">
+        <button type="button" class="button secondary" id="games-button">Игры</button>
+        <button type="button" class="button secondary" id="logout-button">Выйти</button>
+      </div>
+    </div>
+  </header>
+  <main class="auth-screen">
+    <section class="auth-panel">
+      <div class="auth-logo">
+        <div class="logo" aria-label="CHEMK login logo">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <g>
+              <path class="glitch-layer" d="M29.29,0 H70.71 L100,29.29 V70.71 L70.71,100 H29.29 L0,70.71 V29.29 Z M34,34 H66 V66 H34 Z" fill="#4cff70" fill-rule="evenodd" />
+              <path class="glitch-layer" d="M29.29,0 H70.71 L100,29.29 V70.71 L70.71,100 H29.29 L0,70.71 V29.29 Z M34,34 H66 V66 H34 Z" fill="#4cff70" fill-rule="evenodd" />
+              <path class="glitch-layer" d="M29.29,0 H70.71 L100,29.29 V70.71 L70.71,100 H29.29 L0,70.71 V29.29 Z M34,34 H66 V66 H34 Z" fill="#4cff70" fill-rule="evenodd" />
+            </g>
+          </svg>
+        </div>
+      </div>
+      <div class="auth-title">Авторизация</div>
+      <form id="login-form" class="auth-form" action="#" method="post">
+        <label class="form-label" for="login-name">Имя пользователя</label>
+        <input id="login-name" class="form-input" type="text" placeholder="Введите имя" />
+        <label class="form-label" for="login-pass">Пароль</label>
+        <input id="login-pass" class="form-input" type="password" placeholder="Введите пароль" />
+        <button type="submit" class="button primary">Войти</button>
+      </form>
+      <div class="auth-register">
+        <div class="register-toggle" id="register-toggle">Создать</div>
+        <form class="register-panel" id="register-panel">
+          <label class="form-label" for="reg-name">Имя</label>
+          <input id="reg-name" class="form-input" type="text" placeholder="Ваше имя" />
+          <label class="form-label" for="reg-pass">Придумать пароль</label>
+          <input id="reg-pass" class="form-input" type="password" placeholder="Пароль" />
+          <label class="form-label" for="reg-group">Группа</label>
+          <select id="reg-group" class="form-input select">
+            <option value="c3-25">C3-25</option>
+          </select>
+          <div class="register-actions">
+            <button type="submit" class="button primary">Создать</button>
+            <button type="button" class="register-return" id="register-return">Вернуться</button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+  <main class="dashboard hidden" id="dashboard">
+    <div class="dashboard-layout">
+      <aside class="dashboard-sidebar hidden" id="dashboard-sidebar">
+        <div class="sidebar-section">
+          <button type="button" class="sidebar-button" id="favorites-button">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true">
+              <g>
+                <path d="m19.81 10.67 0 -6.09 -1.52 0 0 25.9 1.52 0 0 -18.28 9.14 0 0 -9.15 -1.52 0 0 7.62 -7.62 0z" fill="currentColor" stroke-width="1"></path>
+                <path d="M25.91 1.53h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path>
+                <path d="M19.81 3.05h1.52v1.53h-1.52Z" fill="currentColor" stroke-width="1"></path>
+                <path d="M16.76 30.48h1.53V32h-1.53Z" fill="currentColor" stroke-width="1"></path>
+                <path d="M15.24 28.96h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path>
+                <path d="M13.72 27.43h1.52v1.53h-1.52Z" fill="currentColor" stroke-width="1"></path>
+                <path d="m15.24 9.15 -3.05 0 0 1.52 -1.52 0 0 -1.52 -3.05 0 0 1.52 -1.52 0 0 3.05 1.52 0 0 1.52 1.52 0 0 1.53 1.53 0 0 1.52 1.52 0 0 -1.52 1.53 0 0 -1.53 1.52 0 0 -1.52 1.52 0 0 -3.05 -1.52 0 0 -1.52z" fill="currentColor" stroke-width="1"></path>
+                <path d="M12.19 25.91h1.53v1.52h-1.53Z" fill="currentColor" stroke-width="1"></path>
+                <path d="M10.67 24.39h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path>
+                <path d="M9.14 25.91h1.53v1.52H9.14Z" fill="currentColor" stroke-width="1"></path>
+                <path d="m7.62 1.53 13.71 0 0 1.52 1.53 0 0 -1.52 3.05 0 0 -1.53L7.62 0l0 1.53z" fill="currentColor" stroke-width="1"></path>
+                <path d="M7.62 27.43h1.52v1.53H7.62Z" fill="currentColor" stroke-width="1"></path>
+                <path d="M6.1 28.96h1.52v1.52H6.1Z" fill="currentColor" stroke-width="1"></path>
+                <path d="M6.1 1.53h1.52v1.52H6.1Z" fill="currentColor" stroke-width="1"></path>
+                <path d="M4.57 30.48H6.1V32H4.57Z" fill="currentColor" stroke-width="1"></path>
+                <path d="M4.57 3.05H6.1v1.53H4.57Z" fill="currentColor" stroke-width="1"></path>
+                <path d="M3.05 4.58h1.52v25.9H3.05Z" fill="currentColor" stroke-width="1"></path>
+              </g>
+            </svg>
+            Избранное
+          </button>
+          <div class="favorites-files" id="favorites-files"></div>
+        </div>
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Пользователи группы</div>
+          <div class="sidebar-list" id="sidebar-users-list"></div>
+        </div>
+      </aside>
+      <section class="dashboard-content">
+        <div class="dashboard-files-panel" id="dashboard-files-panel">
+          <div class="dashboard-files-title" id="dashboard-files-title">Файлы</div>
+          <div class="dashboard-files-list" id="dashboard-files-list"></div>
+        </div>
+        <div class="dashboard-files-panel" id="games-menu-panel">
+          <div class="dashboard-files-title">Игры</div>
+          <div class="dashboard-files-list games-menu-list">
+            <a class="game-card" href="tower-climb.html">
+              <div class="game-card-image" style="background-image: url('https://s10.iimage.su/s/04/th_gvnjjCIx1ZaO5HXonHv1EZkqdW3rHVMlEQnP96qyw.png');"></div>
+              <div class="game-card-title">Врата Башни</div>
+            </a>
+            <a class="game-card" href="mahjong.html">
+              <div class="game-card-image" style="background-image: url('https://s10.iimage.su/s/04/th_gcoNFZwxDEzTaOw427aLRI28MsPvbSOYzBAc6EPRt.png');"></div>
+              <div class="game-card-title">Маджонг Древних</div>
+            </a>
+            <a class="game-card" href="basketball.html">
+              <div class="game-card-image" style="background-image: url('https://s10.iimage.su/s/04/th_gFiXubXxk0FhTe2iUkOAolNR0LHgpfHLMO85QEgCW.png');"></div>
+              <div class="game-card-title">Баскетбол</div>
+            </a>
+            <a class="game-card" href="minecraft.html">
+              <div class="game-card-image" style="background-image: url('https://s10.iimage.su/s/04/th_g5MaV0KxYkJNFplbCOPp5S5hUUlA69QHic1EGjAjX.png');"></div>
+              <div class="game-card-title">Minecraft</div>
+            </a>
+            <a class="game-card" href="geometry-dash.html">
+              <div class="game-card-image" style="background-image: url('https://s10.iimage.su/s/04/th_gcSGT7xxmRGossSRnIWI6suJPn7TFuhjh3h1NG1J5.png');"></div>
+              <div class="game-card-title">Geometry Dash</div>
+            </a>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+  <script>
+    const loginForm = document.getElementById('login-form');
+    const registerToggle = document.getElementById('register-toggle');
+    const registerPanel = document.getElementById('register-panel');
+    const authScreen = document.querySelector('.auth-screen');
+    const dashboard = document.getElementById('dashboard');
+    const headerMenu = document.getElementById('header-menu');
+    const headerMenuPanel = document.getElementById('header-menu-panel');
+    const logoutButton = document.getElementById('logout-button');
+    const gamesButton = document.getElementById('games-button');
+    const registerReturn = document.getElementById('register-return');
+    const loginNameField = document.getElementById('login-name');
+    const regNameField = document.getElementById('reg-name');
+
+    const groupBadge = document.getElementById('group-badge');
+    const headerSearchContainer = document.getElementById('header-search-container');
+    const headerSearchInput = document.getElementById('header-search-input');
+    const searchButton = document.getElementById('search-button');
+    const favoritesButton = document.getElementById('favorites-button');
+    const favoritesFiles = document.getElementById('favorites-files');
+    const sidebarUsersList = document.getElementById('sidebar-users-list');
+    const dashboardSidebar = document.getElementById('dashboard-sidebar');
+    const dashboardFilesPanel = document.getElementById('dashboard-files-panel');
+    const gamesMenuPanel = document.getElementById('games-menu-panel');
+    const dashboardFilesList = document.getElementById('dashboard-files-list');
+
+    const getRegisteredUsers = () => {
+      try {
+        return JSON.parse(localStorage.getItem('chemkUsers') || '{}');
+      } catch {
+        return {};
+      }
+    };
+
+    const setRegisteredUsers = users => {
+      localStorage.setItem('chemkUsers', JSON.stringify(users));
+    };
+
+    const getUploadedFiles = () => {
+      try {
+        return JSON.parse(localStorage.getItem('chemkFiles') || '[]');
+      } catch {
+        return [];
+      }
+    };
+
+    const isRussianName = name => /^[А-ЯЁа-яё ]+$/.test(name);
+
+    const normalizeRussianName = value => value.replace(/[^А-ЯЁа-яё ]/gi, '');
+
+    loginNameField.addEventListener('input', () => {
+      loginNameField.value = normalizeRussianName(loginNameField.value);
+    });
+
+    regNameField.addEventListener('input', () => {
+      regNameField.value = normalizeRussianName(regNameField.value);
+    });
+
+    const renderFavoritesFiles = () => {
+      const files = getUploadedFiles();
+      favoritesFiles.innerHTML = '';
+      if (files.length === 0) {
+        const emptyItem = document.createElement('div');
+        emptyItem.className = 'sidebar-item';
+        emptyItem.textContent = 'Здесь пока нет файлов';
+        favoritesFiles.appendChild(emptyItem);
+        return;
+      }
+      files.forEach(file => {
+        const item = document.createElement('div');
+        item.className = 'sidebar-item';
+        item.textContent = file;
+        favoritesFiles.appendChild(item);
+      });
+    };
+
+    const renderGroupUsers = searchQuery => {
+      const users = getRegisteredUsers();
+      sidebarUsersList.innerHTML = '';
+      const group = localStorage.getItem('chemkGroup') || '';
+      const currentUser = localStorage.getItem('chemkUser') || '';
+      const matchedUsers = Object.entries(users)
+        .filter(([name, user]) => user.group === group)
+        .filter(([name]) => !searchQuery || name.toLowerCase().includes(searchQuery.toLowerCase()));
+
+      if (matchedUsers.length === 0) {
+        const emptyItem = document.createElement('div');
+        emptyItem.className = 'sidebar-item';
+        emptyItem.textContent = 'Пользователей нет';
+        sidebarUsersList.appendChild(emptyItem);
+        return;
+      }
+
+      matchedUsers.forEach(([name]) => {
+        const item = document.createElement('div');
+        item.className = 'sidebar-item';
+        item.dataset.username = name;
+        item.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true">
+            <g>
+              <path d="M30.48 12.19H32v7.62h-1.52Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M28.95 19.81h1.53v3.04h-1.53Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M27.43 22.85h1.52v3.05h-1.52Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M27.43 6.09h1.52v3.05h-1.52Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M25.91 25.9h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M25.91 4.57h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M22.86 27.42h3.05v1.53h-3.05Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M22.86 3.04h3.05v1.53h-3.05Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M19.81 28.95h3.05v1.52h-3.05Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M19.81 1.52h3.05v1.52h-3.05Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M12.19 30.47h7.62V32h-7.62Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M13.72 22.85h6.09v1.53h-6.09Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M12.19 0h7.62v1.52h-7.62Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M12.19 21.33h1.53v1.52h-1.53Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M9.14 28.95h3.05v1.52H9.14Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M9.14 1.52h3.05v1.52H9.14Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M6.1 27.42h3.04v1.53H6.1Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M6.1 3.04h3.04v1.53H6.1Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M4.57 25.9H6.1v1.52H4.57Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M4.57 4.57H6.1v1.52H4.57Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M3.05 22.85h1.52v3.05H3.05Z" fill="currentColor" stroke-width="1"></path>
+              <path d="m3.05 15.23 1.52 0 0 1.53 1.53 0 0 1.52 6.09 0 0 -1.52 1.53 0 0 -1.53 1.52 0 0 -1.52 3.05 0 0 1.52 1.52 0 0 1.53 1.52 0 0 1.52 6.1 0 0 -1.52 1.52 0 0 -4.57 1.53 0 0 -3.05 -1.53 0 0 1.52 -25.9 0 0 -1.52 -1.52 0 0 3.05 1.52 0 0 3.04z" fill="currentColor" stroke-width="1"></path>
+              <path d="M3.05 6.09h1.52v3.05H3.05Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M1.53 19.81h1.52v3.04H1.53Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M0 12.19h1.53v7.62H0Z" fill="currentColor" stroke-width="1"></path>
+            </g>
+          </svg>
+          ${name}${name === currentUser ? ' (вы)' : ''}
+        `;
+        item.addEventListener('click', () => {
+          favoritesButton.classList.remove('active');
+          document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+          item.classList.add('active');
+          renderFilesPanel(name);
+        });
+        sidebarUsersList.appendChild(item);
+      });
+    };
+
+    const setLoggedState = (username = '', group = '') => {
+      const storedGroup = group || localStorage.getItem('chemkGroup') || '';
+      localStorage.setItem('chemkLogged', '1');
+      localStorage.setItem('chemkUser', username);
+      localStorage.setItem('chemkGroup', storedGroup);
+      authScreen.classList.add('hidden');
+      dashboard.classList.remove('hidden');
+      headerMenu.classList.remove('hidden');
+      headerMenuPanel.classList.remove('visible');
+      if (storedGroup) {
+        groupBadge.textContent = storedGroup;
+        groupBadge.classList.remove('hidden');
+      } else {
+        groupBadge.classList.add('hidden');
+      }
+      dashboardSidebar.classList.remove('hidden');
+      gamesMenuPanel.classList.remove('hidden');
+      dashboardFilesPanel.classList.add('hidden');
+      renderFavoritesFiles();
+      renderGroupUsers();
+    };
+
+    const setLoggedOut = () => {
+      loginForm.classList.remove('hidden');
+      registerPanel.classList.remove('visible');
+      registerToggle.classList.remove('hidden');
+      document.getElementById('login-name').focus();
+      localStorage.removeItem('chemkLogged');
+      localStorage.removeItem('chemkUser');
+      dashboard.classList.add('hidden');
+      authScreen.classList.remove('hidden');
+      headerMenu.classList.add('hidden');
+      headerMenuPanel.classList.remove('visible');
+      dashboardSidebar.classList.add('hidden');
+      headerSearchContainer.classList.remove('search-active');
+      headerSearchInput.value = '';
+      favoritesFiles.classList.remove('visible');
+    };
+
+    const initState = () => {
+      if (localStorage.getItem('chemkLogged') === '1') {
+        const username = localStorage.getItem('chemkUser') || '';
+        const group = localStorage.getItem('chemkGroup') || '';
+        setLoggedState(username, group);
+      } else {
+        setLoggedOut();
+      }
+    };
+
+    loginForm.addEventListener('submit', event => {
+      event.preventDefault();
+      const username = loginNameField.value.trim();
+      const password = document.getElementById('login-pass').value.trim();
+      if (!username || !password) {
+        alert('Введите имя пользователя и пароль');
+        return;
+      }
+      if (!isRussianName(username)) {
+        alert('Имя должно содержать только русские буквы и пробелы');
+        return;
+      }
+      const users = getRegisteredUsers();
+      if (Object.keys(users).length > 0 && !users[username]) {
+        alert('Пользователь не найден. Сначала зарегистрируйтесь.');
+        return;
+      }
+      const group = users[username]?.group || localStorage.getItem('chemkGroup') || '';
+      setLoggedState(username, group);
+    });
+
+    registerToggle.addEventListener('click', () => {
+      registerPanel.classList.add('visible');
+      loginForm.classList.add('hidden');
+      registerToggle.classList.add('hidden');
+    });
+
+    registerReturn.addEventListener('click', () => {
+      registerPanel.classList.remove('visible');
+      loginForm.classList.remove('hidden');
+      registerToggle.classList.remove('hidden');
+    });
+
+    registerPanel.addEventListener('submit', event => {
+      event.preventDefault();
+      const username = regNameField.value.trim();
+      const password = document.getElementById('reg-pass').value.trim();
+      const group = document.getElementById('reg-group').value.trim();
+      if (!username || !password) {
+        alert('Введите имя и пароль для регистрации');
+        return;
+      }
+      if (!isRussianName(username)) {
+        alert('Имя должно содержать только русские буквы и пробелы');
+        return;
+      }
+      const users = getRegisteredUsers();
+      if (users[username]) {
+        alert('Пользователь с таким именем уже зарегистрирован');
+        return;
+      }
+      users[username] = { group, password };
+      setRegisteredUsers(users);
+      setLoggedState(username, group);
+    });
+
+    headerMenu.addEventListener('click', () => {
+      headerMenuPanel.classList.toggle('visible');
+    });
+
+    gamesButton.addEventListener('click', () => {
+      headerMenuPanel.classList.remove('visible');
+      if (gamesMenuPanel.classList.contains('hidden')) {
+        dashboardFilesPanel.classList.add('hidden');
+        gamesMenuPanel.classList.remove('hidden');
+        clearSidebarSelection();
+      } else {
+        gamesMenuPanel.classList.add('hidden');
+        dashboardFilesPanel.classList.remove('hidden');
+      }
+    });
+
+    logoutButton.addEventListener('click', setLoggedOut);
+
+    const renderFilesPanel = owner => {
+      gamesMenuPanel.classList.add('hidden');
+      dashboardFilesPanel.classList.remove('hidden');
+      const currentUser = localStorage.getItem('chemkUser') || '';
+      const files = getUploadedFiles().filter(file => file.owner === owner);
+      const ownerLabel = owner === currentUser ? 'Ваши файлы' : `Файлы ${owner}`;
+      document.getElementById('dashboard-files-title').textContent = ownerLabel;
+      dashboardFilesList.innerHTML = '';
+      if (files.length === 0) {
+        dashboardFilesList.innerHTML = '';
+        return;
+      }
+      files.forEach(file => {
+        const item = document.createElement('div');
+        item.className = 'sidebar-item';
+        item.textContent = file.name;
+        dashboardFilesList.appendChild(item);
+      });
+    };
+
+    const clearSidebarSelection = () => {
+      favoritesButton.classList.remove('active');
+      document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+    };
+
+    const toggleSearch = () => {
+      const isActive = headerSearchContainer.classList.toggle('search-active');
+      if (isActive) {
+        headerSearchInput.focus();
+      } else {
+        headerSearchInput.value = '';
+        renderGroupUsers();
+      }
+    };
+
+    searchButton.addEventListener('click', event => {
+      event.stopPropagation();
+      toggleSearch();
+    });
+
+    headerSearchInput.addEventListener('input', () => {
+      renderGroupUsers(headerSearchInput.value.trim());
+    });
+
+    favoritesButton.addEventListener('click', () => {
+      gamesMenuPanel.classList.add('hidden');
+      dashboardFilesPanel.classList.remove('hidden');
+      clearSidebarSelection();
+      favoritesButton.classList.add('active');
+      renderFilesPanel(localStorage.getItem('chemkUser') || '');
+    });
+
+    document.addEventListener('click', event => {
+      if (!headerMenu.contains(event.target) && !headerMenuPanel.contains(event.target)) {
+        headerMenuPanel.classList.remove('visible');
+      }
+      if (!headerSearchContainer.contains(event.target)) {
+        headerSearchContainer.classList.remove('search-active');
+      }
+    });
+
+    initState();
+  </script>
+</body>
+</html>
