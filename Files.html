@@ -1,0 +1,2717 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CHEMK</title>
+  <style>
+    @font-face {
+      font-family: "Akedopikuseru";
+      src: url("Akedopikuseru-Regular.otf") format("opentype");
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    :root {
+      color-scheme: dark;
+      --bg: #030703;
+      --panel: rgba(0, 0, 0, 0.18);
+      --border: rgba(76, 255, 112, 0.18);
+      --text: #9eff8f;
+      --accent: #4cff70;
+      --accent-dark: #0c2c0c;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+      width: 100%;
+      background: radial-gradient(circle at 10% 10%, rgba(76, 255, 112, 0.16), transparent 18%),
+        radial-gradient(circle at 85% 15%, rgba(0, 255, 128, 0.09), transparent 12%),
+        linear-gradient(180deg, #061206 0%, #020402 100%);
+      color: var(--text);
+      font-family: "Akedopikuseru";
+      image-rendering: pixelated;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 24px 24px, 24px 24px;
+      pointer-events: none;
+      opacity: 0.4;
+      z-index: 0;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      min-height: 84px;
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      background: var(--panel);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+      z-index: 10;
+    }
+
+    .logo {
+      position: relative;
+      width: 96px;
+      height: 96px;
+      display: grid;
+      place-items: center;
+      background: transparent;
+      overflow: visible;
+    }
+
+    .logo svg {
+      width: 88px;
+      height: 88px;
+      filter: drop-shadow(0 0 18px rgba(76,255,112,0.5)) drop-shadow(0 0 28px rgba(76,255,112,0.22));
+    }
+
+    .logo svg .glitch-layer {
+      opacity: 1;
+      transform-origin: center center;
+      fill: #8cff7d !important;
+      stroke: rgba(255,255,255,0.16);
+      stroke-width: 0.8px;
+    }
+
+    .logo svg .glitch-layer:nth-child(2) {
+      animation: svgGlitchA 2.6s infinite linear;
+    }
+
+    .logo svg .glitch-layer:nth-child(3) {
+      animation: svgGlitchB 3.2s infinite linear;
+    }
+
+    .brand-text {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .brand-name {
+      position: relative;
+      font-family: "Akedopikuseru";
+      font-size: 3rem;
+      font-weight: 900;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #4cff70;
+      text-shadow: 0 0 8px rgba(76,255,112,0.22);
+      line-height: 1;
+    }
+
+    .header-search-container {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      position: relative;
+      transition: width 0.2s ease;
+      flex-direction: row-reverse;
+    }
+
+    .header-search {
+      width: 66px;
+      height: 66px;
+      display: grid;
+      place-items: center;
+      border: 3px solid rgba(76,255,112,0.36);
+      background: rgba(0,0,0,0.28);
+      color: #4cff70;
+      cursor: pointer;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+      padding: 0;
+      line-height: 0;
+      border-radius: 0;
+    }
+
+    .header-search svg {
+      width: 32px;
+      height: 32px;
+      display: block;
+      fill: #4cff70;
+    }
+
+    .header-search-input {
+      width: 0;
+      opacity: 0;
+      border: 3px solid rgba(76,255,112,0.36);
+      background: rgba(0,0,0,0.28);
+      color: #c8f8b2;
+      font-family: "Akedopikuseru";
+      font-size: 0.95rem;
+      padding: 18px 16px;
+      transition: width 0.25s ease, opacity 0.25s ease, margin 0.25s ease;
+      outline: none;
+      overflow: hidden;
+      white-space: nowrap;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+      pointer-events: none;
+      line-height: 1;
+      border-radius: 0;
+    }
+
+    .header-search-container.search-active .header-search-input {
+      width: 220px;
+      opacity: 1;
+      pointer-events: auto;
+      margin-right: 8px;
+    }
+
+    .header-search:hover,
+    .header-menu:hover {
+      background: rgba(0,0,0,0.4);
+      box-shadow: 0 0 18px rgba(76,255,112,0.18), inset 0 0 0 1px rgba(255,255,255,0.08);
+    }
+
+    .group-badge {
+      font-family: "Akedopikuseru";
+      font-size: 0.95rem;
+      letter-spacing: 0.24em;
+      color: rgba(158,255,143,0.94);
+      text-transform: uppercase;
+      opacity: 0.9;
+    }
+
+    .group-badge.hidden {
+      display: none;
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+      margin-left: auto;
+    }
+
+    .header-menu {
+      width: 66px;
+      height: 66px;
+      display: grid;
+      place-items: center;
+      border: 3px solid rgba(76,255,112,0.36);
+      background: rgba(0,0,0,0.28);
+      cursor: pointer;
+      position: relative;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+      color: #4cff70;
+    }
+
+    .header-menu svg {
+      width: 30px;
+      height: 30px;
+      display: block;
+      fill: currentColor;
+    }
+
+    .header-menu-panel {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      min-width: 260px;
+      padding: 14px;
+      display: none;
+      gap: 10px;
+      background: rgba(0,0,0,0.96);
+      border: 3px solid rgba(76,255,112,0.28);
+      box-shadow: 0 0 28px rgba(0,255,112,0.16);
+      z-index: 20;
+    }
+
+    .header-menu-panel.visible {
+      display: grid;
+    }
+
+    .header-menu-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .dashboard-files-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      width: 100%;
+    }
+
+    .dashboard-files-actions {
+      position: relative;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .dashboard-files-actions.hidden {
+      display: none !important;
+    }
+
+    .dashboard-files-actions .button {
+      min-width: 66px;
+      width: 66px;
+      height: 66px;
+      padding: 12px;
+      border-radius: 0;
+      justify-content: center;
+    }
+
+    .site-action-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 120;
+      background: rgba(0, 0, 0, 0.88);
+      background-image: linear-gradient(0deg, rgba(76,255,112,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(76,255,112,0.03) 1px, transparent 1px);
+      background-size: 12px 12px;
+      padding: 18px;
+    }
+
+    .site-action-modal.visible {
+      display: block;
+    }
+
+    .site-action-card {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: min(760px, 100%);
+      max-width: 90vw;
+      max-height: 90vh;
+      min-width: 520px;
+      min-height: 340px;
+      background: rgba(2, 6, 12, 0.98);
+      background-image: linear-gradient(90deg, rgba(76,255,112,0.08) 1px, transparent 1px), linear-gradient(rgba(76,255,112,0.08) 1px, transparent 1px);
+      background-size: 10px 10px;
+      border: 1px solid rgba(76,255,112,0.28);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+      border-radius: 22px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      overflow: hidden;
+      cursor: default;
+    }
+
+    .site-action-card.resizable {
+      resize: both;
+    }
+
+    .site-action-card.dragging {
+      cursor: grabbing;
+    }
+
+    .site-action-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #9eff8f;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .site-action-message {
+      color: #c8f8b2;
+      line-height: 1.6;
+      min-height: 1.2em;
+    }
+
+    .site-action-input {
+      width: 100%;
+      min-height: 48px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(255, 255, 255, 0.04);
+      color: #c8f8b2;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-family: "Akedopikuseru", sans-serif;
+      font-size: 1rem;
+    }
+
+    .site-action-textarea {
+      width: 100%;
+      min-height: 280px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(255, 255, 255, 0.04);
+      color: #c8f8b2;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-family: "Akedopikuseru", sans-serif;
+      font-size: 1rem;
+      resize: both;
+      overflow: auto;
+      display: none;
+      flex: 1 1 auto;
+      min-height: 220px;
+    }
+
+    .site-action-modal-image {
+      display: none;
+      width: 100%;
+      max-height: 60vh;
+      object-fit: contain;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(0,0,0,0.05);
+    }
+
+    .site-action-buttons {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .site-action-buttons .button {
+      min-width: 110px;
+      padding: 12px 18px;
+    }
+
+    .site-action-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 36px;
+      height: 36px;
+      border: none;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      font-size: 1.25rem;
+      cursor: pointer;
+    }
+
+    .dashboard-files-actions .button svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    .dashboard-files-actions .button:hover {
+      transform: translateY(-2px);
+      transition: transform 0.18s ease;
+    }
+
+    .icon-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 12px;
+      min-width: 120px;
+      font-size: 0.85rem;
+      text-transform: none;
+    }
+
+    .icon-button svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+    }
+
+    .owner-actions {
+      margin-left: auto;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .owner-actions button {
+      min-width: auto;
+      padding: 8px 10px;
+      font-size: 0.82rem;
+      white-space: nowrap;
+    }
+
+    .brand-name::before,
+    .brand-name::after {
+      content: attr(data-text);
+      position: absolute;
+      inset: 0;
+      color: #4cff70;
+      opacity: 0.65;
+      mix-blend-mode: screen;
+    }
+
+    .brand-name::before {
+      transform: translate(-2px, -1px);
+      clip-path: inset(0 0 58% 0);
+      animation: textGlitchA 2.3s infinite linear;
+    }
+
+    .brand-name::after {
+      transform: translate(1px, 2px);
+      clip-path: inset(52% 0 0 0);
+      animation: textGlitchB 2.9s infinite linear;
+      opacity: 0.55;
+    }
+
+    .auth-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 160px 20px 40px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .dashboard {
+      min-height: calc(100vh - 84px);
+      display: flex;
+      justify-content: center;
+      padding: 160px 32px 40px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .dashboard-layout {
+      display: grid;
+      grid-template-columns: minmax(240px, 360px) minmax(0, 1fr);
+      gap: 24px;
+      width: 100%;
+      max-width: none;
+      min-height: calc(100vh - 164px);
+      align-items: start;
+    }
+
+    .dashboard-sidebar {
+      display: grid;
+      align-content: start;
+      gap: 14px;
+      background: rgba(0,0,0,0.92);
+      border: 4px solid rgba(76,255,112,0.28);
+      padding: 24px;
+      box-shadow: 0 0 40px rgba(0,255,112,0.1);
+      min-height: calc(100vh - 164px);
+      min-width: 320px;
+      max-width: 360px;
+      width: auto;
+      border-radius: 18px;
+    }
+
+    .dashboard-sidebar.hidden {
+      display: none;
+    }
+
+    .dashboard-files-panel {
+      display: grid;
+      gap: 14px;
+      align-content: start;
+      background: rgba(0,0,0,0.92);
+      border: 4px solid rgba(76,255,112,0.28);
+      padding: 24px;
+      box-shadow: 0 0 40px rgba(0,255,112,0.1);
+      min-height: calc(100vh - 164px);
+      border-radius: 18px;
+    }
+
+    .dashboard-content {
+      display: grid;
+      align-content: start;
+      min-height: calc(100vh - 164px);
+    }
+
+    .dashboard-files-title {
+      font-family: "Akedopikuseru";
+      color: #9eff8f;
+      font-size: 0.95rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+    }
+
+    .dashboard-files-list {
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
+
+    .games-menu-list {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      align-content: start;
+      justify-items: stretch;
+      width: 100%;
+    }
+
+    .game-card {
+      display: flex;
+      flex-direction: column;
+      background: rgba(0,0,0,0.18);
+      border: 1px solid rgba(76,255,112,0.18);
+      border-radius: 18px;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      min-height: 240px;
+      transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+    }
+
+    .game-card:hover {
+      transform: translateY(-2px);
+      background: rgba(0,0,0,0.28);
+      border-color: rgba(76,255,112,0.35);
+    }
+
+    .game-card-image {
+      height: 140px;
+      width: 100%;
+      background-size: cover;
+      background-position: center;
+      background-color: #111;
+    }
+
+    .game-card-title {
+      padding: 16px 14px;
+      font-family: "Akedopikuseru";
+      font-size: 1rem;
+      letter-spacing: 0.08em;
+      text-align: center;
+      color: #d2ffb9;
+      line-height: 1.3;
+      flex: 1;
+      display: grid;
+      place-items: center;
+    }
+
+    .dashboard-files-panel .sidebar-item {
+      border-color: rgba(76,255,112,0.18);
+      background: rgba(0,0,0,0.22);
+    }
+
+    .dashboard-files-panel .sidebar-item:hover {
+      background: rgba(0,0,0,0.36);
+    }
+
+    .sidebar-section {
+      display: grid;
+      gap: 6px;
+      align-content: start;
+    }
+
+    .sidebar-section-title {
+      font-family: "Akedopikuseru";
+      color: #9eff8f;
+      font-size: 0.85rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      margin: 0 0 6px 0;
+      padding: 0;
+    }
+
+    .sidebar-button {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid rgba(76,255,112,0.22);
+      background: rgba(0,0,0,0.18);
+      color: #d2ffb9;
+      font-family: "Akedopikuseru";
+      font-size: 0.92rem;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: none;
+      justify-content: flex-start;
+      border-radius: 12px;
+      transition: transform 0.16s ease, background 0.16s ease, border-color 0.16s ease;
+      min-height: 64px;
+      line-height: 1.2;
+    }
+
+    .sidebar-button:hover {
+      transform: translateX(2px);
+      background: rgba(0,0,0,0.42);
+      border-color: rgba(76,255,112,0.45);
+    }
+
+    .sidebar-button:hover {
+      transform: translateX(2px);
+      background: linear-gradient(180deg, rgba(0,0,0,0.38), rgba(0,0,0,0.60));
+      border-color: rgba(76,255,112,0.4);
+    }
+
+    .sidebar-button.active,
+    .sidebar-item.active {
+      background: rgba(76,255,112,0.14);
+      border-color: rgba(76,255,112,0.6);
+      color: #ecffde;
+    }
+
+    .sidebar-button svg,
+    .sidebar-item svg,
+    #folder-back-button svg {
+      width: 42px;
+      height: 42px;
+      display: block;
+      fill: currentColor;
+    }
+
+    .sidebar-list {
+      display: grid;
+      gap: 10px;
+      align-content: start;
+      margin-top: 0;
+    }
+
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      border: 1px solid rgba(76,255,112,0.22);
+      background: rgba(0,0,0,0.18);
+      color: #d2ffb9;
+      font-family: "Akedopikuseru";
+      font-size: 0.95rem;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.2s ease, border-color 0.2s ease, transform 0.18s ease;
+      min-height: 64px;
+      line-height: 1.2;
+      width: 100%;
+      box-shadow: none;
+    }
+
+    .sidebar-item:hover {
+      border-color: rgba(76,255,112,0.36);
+      background: rgba(0,0,0,0.42);
+      transform: translateX(2px);
+    }
+
+    .sidebar-item:hover {
+      border-color: rgba(76,255,112,0.36);
+      background: rgba(0,0,0,0.48);
+    }
+
+    .dashboard-files-list.file-grid {
+      display: grid;
+      grid-template-columns: repeat(10, minmax(0, 1fr));
+      gap: 10px;
+      align-content: start;
+      padding-top: 10px;
+    }
+
+    .dashboard-files-list.file-grid > .empty-state {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 18px 20px;
+      min-height: 100px;
+      font-size: 0.75rem;
+      line-height: 1.4;
+      white-space: normal;
+      text-align: center;
+    }
+
+    .hidden-input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+      width: 0;
+      height: 0;
+    }
+
+    .file-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      padding: 14px 10px;
+      border: 2px solid transparent;
+      background: rgba(0,0,0,0.24);
+      min-height: 120px;
+      text-align: center;
+      color: #7CFC00;
+      font-family: "Akedopikuseru";
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      line-height: 1.2;
+      overflow-wrap: break-word;
+      word-break: break-word;
+      transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+    }
+
+    .file-card:hover {
+      transform: translateY(-1px);
+      border-color: rgba(76,255,112,0.32);
+      background: rgba(0,0,0,0.32);
+    }
+
+    .file-card.selected {
+      background: rgba(76,255,112,0.12);
+      border-color: rgba(76,255,112,0.7);
+      box-shadow: inset 0 0 0 1px rgba(76,255,112,0.35);
+    }
+
+    .file-card svg {
+      width: 72px;
+      height: 72px;
+      fill: currentColor;
+    }
+
+    .file-card-name {
+      font-size: 0.55rem;
+      letter-spacing: 0.08em;
+      max-width: 100%;
+      word-wrap: break-word;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      line-clamp: 2;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    .dashboard-selection-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 12px 0 0 0;
+      padding: 12px 14px;
+      border: 1px solid rgba(76,255,112,0.18);
+      background: rgba(0,0,0,0.24);
+      border-radius: 16px;
+      color: #d8ffc6;
+      font-family: "Akedopikuseru";
+      font-size: 0.82rem;
+    }
+
+    .dashboard-selection-actions.hidden {
+      display: none;
+    }
+
+    .selection-info {
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .selection-buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .selection-buttons .button {
+      min-width: auto;
+      padding: 10px 14px;
+      font-size: 0.82rem;
+    }
+
+    .empty-state {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 14px;
+      border: none;
+      background: rgba(0, 0, 0, 0.18);
+      color: rgba(255, 255, 255, 0.72);
+      font-family: "Akedopikuseru";
+      font-size: 0.7rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      border-radius: 14px;
+      min-height: 80px;
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .custom-context-menu {
+      position: fixed;
+      z-index: 9999;
+      min-width: 220px;
+      background: rgba(1, 10, 0, 0.96);
+      background-image: linear-gradient(0deg, rgba(76,255,112,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(76,255,112,0.04) 1px, transparent 1px);
+      background-size: 12px 12px;
+      border: 1px solid rgba(76, 255, 112, 0.24);
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 255, 112, 0.08);
+      backdrop-filter: blur(18px);
+      padding: 4px 0;
+      overflow: hidden;
+    }
+
+    .custom-context-menu.hidden {
+      display: none;
+    }
+
+    .context-menu-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 10px 14px;
+      margin: 0;
+      color: #c8ffc1;
+      font-family: "Akedopikuseru";
+      font-size: 0.82rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: background 0.18s ease, color 0.18s ease;
+      text-align: left;
+      line-height: 1.2;
+    }
+
+    .context-menu-item:hover {
+      background: rgba(76, 255, 112, 0.12);
+      color: #ecffe7;
+    }
+
+    .context-menu-item svg {
+      width: 22px;
+      height: 22px;
+      fill: currentColor;
+    }
+
+    .context-menu-divider {
+      height: 1px;
+      margin: 6px 0;
+      background: rgba(76, 255, 112, 0.12);
+    }
+
+    #folder-back-button {
+      border: none;
+      background: transparent;
+      padding: 8px;
+      min-width: auto;
+      width: 44px;
+      height: 44px;
+      box-shadow: none;
+    }
+
+    #folder-back-button .icon-button svg {
+      width: 32px;
+      height: 32px;
+    }
+
+    .dashboard-text {
+      font-family: "Akedopikuseru";
+      color: rgba(158,255,143,0.82);
+      font-size: 1rem;
+      line-height: 1.6;
+      max-width: 680px;
+      margin-top: 14px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .auth-panel {
+      width: min(760px, 100%);
+      background: rgba(0, 0, 0, 0.96);
+      border: 4px solid rgba(76, 255, 112, 0.28);
+      padding: 40px 32px 34px;
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,0.05), inset 8px 0 0 rgba(76,255,112,0.06), inset -8px 0 0 rgba(76,255,112,0.06), inset 0 8px 0 rgba(76,255,112,0.06), inset 0 -8px 0 rgba(76,255,112,0.06), 0 0 48px rgba(0,255,112,0.1);
+      backdrop-filter: blur(24px);
+      position: relative;
+      overflow: hidden;
+      background-image: linear-gradient(rgba(76,255,112,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(76,255,112,0.08) 1px, transparent 1px);
+      background-size: 16px 16px, 16px 16px;
+      image-rendering: pixelated;
+    }
+
+    .auth-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 10px, rgba(76,255,112,0.08) 11px, transparent 12px), repeating-linear-gradient(90deg, transparent, transparent 10px, rgba(76,255,112,0.08) 11px, transparent 12px);
+      pointer-events: none;
+      opacity: 0.25;
+    }
+
+    .auth-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border: 2px solid rgba(76,255,112,0.18);
+      pointer-events: none;
+      opacity: 0.35;
+    }
+
+    .auth-panel > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .auth-logo {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 22px;
+    }
+
+    .auth-title {
+      text-align: center;
+      font-family: "Akedopikuseru";
+      font-size: 1.1rem;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: #4cff70;
+      margin-bottom: 22px;
+    }
+
+    .auth-form,
+    .auth-register {
+      display: grid;
+      gap: 16px;
+    }
+
+    .form-label {
+      font-family: "Akedopikuseru";
+      font-size: 0.8rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: rgba(158,255,143,0.88);
+    }
+
+    .form-input,
+    .select {
+      width: 100%;
+      background: rgba(0,0,0,0.64);
+      border: 3px solid rgba(76,255,112,0.28);
+      color: #c8f8b2;
+      font-family: "Akedopikuseru";
+      font-size: 1rem;
+      padding: 18px 14px;
+      border-radius: 0;
+      outline: none;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05), inset 6px 0 0 rgba(76,255,112,0.05), inset -6px 0 0 rgba(76,255,112,0.05), inset 0 6px 0 rgba(76,255,112,0.05), inset 0 -6px 0 rgba(76,255,112,0.05);
+      image-rendering: pixelated;
+    }
+
+    .form-input::placeholder {
+      color: rgba(158,255,143,0.42);
+    }
+
+    .button {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      padding: 18px 22px;
+      border-radius: 0;
+      border: 3px solid rgba(76,255,112,0.34);
+      background: rgba(0, 10, 0, 0.94);
+      color: #4cff70;
+      font-family: "Akedopikuseru";
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.24em;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(76,255,112,0.16), inset 6px 0 0 rgba(76,255,112,0.05), inset -6px 0 0 rgba(76,255,112,0.05), inset 0 6px 0 rgba(76,255,112,0.05), inset 0 -6px 0 rgba(76,255,112,0.05);
+      image-rendering: pixelated;
+    }
+
+    .button.secondary {
+      background: rgba(0,0,0,0.4);
+      border-style: dashed;
+      color: rgba(158,255,143,0.96);
+      box-shadow: inset 0 0 0 1px rgba(76,255,112,0.12);
+    }
+
+    .register-toggle {
+      color: #8dff7a;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      font-family: "Akedopikuseru";
+      font-size: 0.95rem;
+      cursor: pointer;
+      text-shadow: 0 0 4px rgba(76,255,112,0.2);
+      padding: 12px 0;
+      image-rendering: pixelated;
+      width: fit-content;
+    }
+
+    .register-panel {
+      padding: 0;
+      background: transparent;
+      border: none;
+      display: none;
+      gap: 14px;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .register-panel.visible {
+      display: grid;
+    }
+
+    .register-actions {
+      display: grid;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .register-actions .button.primary {
+      width: 100%;
+    }
+
+    .register-return {
+      color: #8dff7a;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      font-family: "Akedopikuseru";
+      font-size: 0.95rem;
+      cursor: pointer;
+      text-shadow: 0 0 4px rgba(76,255,112,0.2);
+      padding: 12px 0;
+      image-rendering: pixelated;
+      width: fit-content;
+      background: transparent;
+      border: none;
+      text-decoration: none;
+      justify-self: start;
+    }
+
+    .register-title {
+      font-family: "Akedopikuseru";
+      font-size: 0.85rem;
+      color: #8dff7a;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+    }
+
+    @keyframes glitchA {
+      0%,100% { transform: translate(-3px,-3px); clip-path: inset(0 0 0 0); }
+      25% { transform: translate(2px,-2px); clip-path: inset(0 0 12px 0); }
+      50% { transform: translate(-2px,2px); clip-path: inset(10px 0 0 0); }
+      75% { transform: translate(3px,1px); clip-path: inset(0 0 0 10px); }
+    }
+
+    @keyframes glitchB {
+      0%,100% { transform: translate(3px,3px); clip-path: inset(0 0 0 0); }
+      20% { transform: translate(-2px,2px); clip-path: inset(12px 0 0 0); }
+      45% { transform: translate(1px,-3px); clip-path: inset(0 0 10px 0); }
+      70% { transform: translate(-1px,1px); clip-path: inset(0 10px 0 0); }
+    }
+
+    @keyframes svgGlitchA {
+      0%,100% { transform: translate(-1px, 0); }
+      20% { transform: translate(2px, -1px); }
+      45% { transform: translate(-1px, 1px); }
+      70% { transform: translate(1px, -1px); }
+    }
+
+    @keyframes svgGlitchB {
+      0%,100% { transform: translate(1px, 1px); }
+      20% { transform: translate(-1px, 2px); }
+      45% { transform: translate(1px, -1px); }
+      70% { transform: translate(-1px, 0); }
+    }
+
+    @keyframes textGlitchA {
+      0%, 100% { clip-path: inset(0 0 58% 0); transform: translate(-2px, -1px); }
+      25% { clip-path: inset(0 0 64% 0); transform: translate(-1px, -0.4px); }
+      50% { clip-path: inset(0 0 52% 0); transform: translate(-2px, 0.8px); }
+      75% { clip-path: inset(0 0 60% 0); transform: translate(-1.4px, -0.2px); }
+    }
+
+    @keyframes textGlitchB {
+      0%, 100% { clip-path: inset(52% 0 0 0); transform: translate(1px, 2px); }
+      20% { clip-path: inset(58% 0 0 0); transform: translate(1px, 0.2px); }
+      45% { clip-path: inset(50% 0 0 0); transform: translate(1.4px, 1px); }
+      70% { clip-path: inset(56% 0 0 0); transform: translate(0.8px, 1.4px); }
+    }
+
+    @keyframes scanline {
+      0% { background-position: 0 0; }
+      100% { background-position: 0 24px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo" aria-label="CHEMK logo">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <g>
+          <path class="glitch-layer" d="M29.29,0 H70.71 L100,29.29 V70.71 L70.71,100 H29.29 L0,70.71 V29.29 Z M34,34 H66 V66 H34 Z" fill="#4cff70" fill-rule="evenodd" />
+          <path class="glitch-layer" d="M29.29,0 H70.71 L100,29.29 V70.71 L70.71,100 H29.29 L0,70.71 V29.29 Z M34,34 H66 V66 H34 Z" fill="#4cff70" fill-rule="evenodd" />
+          <path class="glitch-layer" d="M29.29,0 H70.71 L100,29.29 V70.71 L70.71,100 H29.29 L0,70.71 V29.29 Z M34,34 H66 V66 H34 Z" fill="#4cff70" fill-rule="evenodd" />
+        </g>
+      </svg>
+    </div>
+    <div class="brand-text">
+      <div class="brand-name" data-text="CHEMK">CHEMK</div>
+      <div class="group-badge hidden" id="group-badge">Группа C3-25</div>
+    </div>
+    <div class="header-controls">
+      <div class="header-search-container" id="header-search-container">
+        <button type="button" class="header-search" id="search-button" aria-label="Поиск">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" id="Interface-Essential-Search-1--Streamline-Pixel" aria-hidden="true">
+            <g>
+              <path d="m24.38 19.81 -1.53 0 0 3.05 -3.04 0 0 1.52 -3.05 0 0 1.52 4.57 0 0 1.53 1.52 0 0 1.52 1.53 0 0 1.53 1.52 0 0 1.52 1.53 0 0 -1.52 1.52 0 0 -1.53 1.52 0 0 -1.52 1.53 0 0 -1.53 -1.53 0 0 -1.52 -1.52 0 0 -1.52 -1.52 0 0 -1.53 -1.53 0 0 -4.57 -1.52 0 0 3.05z" fill="currentColor" stroke-width="1"></path>
+              <path d="M25.9 10.67h1.53v6.09H25.9Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M24.38 7.62h1.52v3.05h-1.52Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M22.85 4.57h1.53v3.05h-1.53Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M21.33 12.19h1.52v3.05h-1.52Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M19.81 9.14h1.52v3.05h-1.52Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M19.81 3.05h3.04v1.52h-3.04Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M16.76 7.62h3.05v1.52h-3.05Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M16.76 1.52h3.05v1.53h-3.05Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M13.71 6.1h3.05v1.52h-3.05Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M10.66 25.9h6.1v1.53h-6.1Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M10.66 0h6.1v1.52h-6.1Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M7.62 24.38h3.04v1.52H7.62Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M7.62 1.52h3.04v1.53H7.62Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M4.57 22.86h3.05v1.52H4.57Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M4.57 3.05h3.05v1.52H4.57Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M3.05 19.81h1.52v3.05H3.05Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M3.05 4.57h1.52v3.05H3.05Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M1.52 16.76h1.53v3.05H1.52Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M1.52 7.62h1.53v3.05H1.52Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M0 10.67h1.52v6.09H0Z" fill="currentColor" stroke-width="1"></path>
+            </g>
+          </svg>
+        </button>
+        <input id="header-search-input" class="header-search-input" type="text" placeholder="Поиск" />
+      </div>
+      <div class="header-menu hidden" id="header-menu" aria-label="Меню пользователя" title="Меню">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" id="Interface-Essential-Cog-Double--Streamline-Pixel" aria-hidden="true">
+          <g>
+            <path d="m28.95 7.62 0 1.52 1.53 0 0 1.53 -1.53 0 0 1.52 3.05 0 0 -4.57 -3.05 0z" fill="currentColor" stroke-width="1"></path>
+            <path d="M28.95 13.71h1.53v1.53h-1.53Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M28.95 4.57h1.53v1.52h-1.53Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M27.43 15.24h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M27.43 12.19h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M27.43 6.09h1.52v1.53h-1.52Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M27.43 3.05h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M25.91 16.76h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M25.91 1.52h1.52v1.53h-1.52Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M24.38 15.24h1.53v1.52h-1.53Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M24.38 3.05h1.53v1.52h-1.53Z" fill="currentColor" stroke-width="1"></path>
+            <path d="m19.81 0 0 3.05 1.53 0 0 -1.53 1.52 0 0 1.53 1.52 0 0 -3.05 -4.57 0z" fill="currentColor" stroke-width="1"></path>
+            <path d="M21.34 25.9h1.52v1.53h-1.52Z" fill="currentColor" stroke-width="1"></path>
+            <path d="m19.81 16.76 0 1.52 3.05 0 0 3.05 -3.05 0 0 1.53 4.57 0 0 -6.1 -4.57 0z" fill="currentColor" stroke-width="1"></path>
+            <path d="M19.81 27.43h1.53v1.52h-1.53Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M19.81 24.38h1.53v1.52h-1.53Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M19.81 13.71h1.53v1.53h-1.53Z" fill="currentColor" stroke-width="1"></path>
+            <path d="m19.81 12.19 1.53 0 0 1.52 3.04 0 0 -1.52 1.53 0 0 -4.57 -1.53 0 0 1.52 -1.52 0 0 -1.52 1.52 0 0 -1.53 -4.57 0 0 1.53 -1.52 0 0 3.05 1.52 0 0 1.52z" fill="currentColor" stroke-width="1"></path>
+            <path d="M18.29 28.95h1.52v1.53h-1.52Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M18.29 22.86h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M18.29 15.24h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M18.29 3.05h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M16.76 27.43h1.53v1.52h-1.53Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M16.76 10.67h1.53v1.52h-1.53Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M16.76 1.52h1.53v1.53h-1.53Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M15.24 25.9h1.52v1.53h-1.52Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M15.24 18.28h1.52v3.05h-1.52Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M15.24 12.19h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M15.24 3.05h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path>
+            <path d="m13.72 30.48 -3.05 0 0 -3.05 -1.52 0 0 4.57 6.09 0 0 -4.57 -1.52 0 0 3.05z" fill="currentColor" stroke-width="1"></path>
+            <path d="M13.72 21.33h1.52v1.53h-1.52Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M13.72 16.76h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M13.72 4.57h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M10.67 15.24h3.05v1.52h-3.05Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M10.67 22.86h3.05v1.52h-3.05Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M9.15 21.33h1.52v1.53H9.15Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M9.15 16.76h1.52v1.52H9.15Z" fill="currentColor" stroke-width="1"></path>
+            <path d="m10.67 9.14 3.05 0 0 3.05 1.52 0 0 -4.57 -6.09 0 0 4.57 1.52 0 0 -3.05z" fill="currentColor" stroke-width="1"></path>
+            <path d="M7.62 25.9h1.53v1.53H7.62Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M7.62 18.28h1.53v3.05H7.62Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M7.62 12.19h1.53v1.52H7.62Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M6.1 27.43h1.52v1.52H6.1Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M6.1 10.67h1.52v1.52H6.1Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M4.57 28.95H6.1v1.53H4.57Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M4.57 22.86H6.1v1.52H4.57Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M4.57 15.24H6.1v1.52H4.57Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M4.57 9.14H6.1v1.53H4.57Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M3.05 27.43h1.52v1.52H3.05Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M3.05 24.38h1.52v1.52H3.05Z" fill="currentColor" stroke-width="1"></path>
+            <path d="m1.53 21.33 0 -3.05 3.04 0 0 -1.52 -4.57 0 0 6.1 4.57 0 0 -1.53 -3.04 0z" fill="currentColor" stroke-width="1"></path>
+            <path d="M3.05 13.71h1.52v1.53H3.05Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M3.05 10.67h1.52v1.52H3.05Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M1.53 25.9h1.52v1.53H1.53Z" fill="currentColor" stroke-width="1"></path>
+            <path d="M1.53 12.19h1.52v1.52H1.53Z" fill="currentColor" stroke-width="1"></path>
+          </g>
+        </svg>
+      </div>
+      <div class="header-menu-panel" id="header-menu-panel">
+        <button type="button" class="button secondary" id="games-button">Игры</button>
+        <button type="button" class="button secondary" id="logout-button">Выйти</button>
+      </div>
+    </div>
+  </header>
+  <main class="auth-screen">
+    <section class="auth-panel">
+      <div class="auth-logo">
+        <div class="logo" aria-label="CHEMK login logo">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <g>
+              <path class="glitch-layer" d="M29.29,0 H70.71 L100,29.29 V70.71 L70.71,100 H29.29 L0,70.71 V29.29 Z M34,34 H66 V66 H34 Z" fill="#4cff70" fill-rule="evenodd" />
+              <path class="glitch-layer" d="M29.29,0 H70.71 L100,29.29 V70.71 L70.71,100 H29.29 L0,70.71 V29.29 Z M34,34 H66 V66 H34 Z" fill="#4cff70" fill-rule="evenodd" />
+              <path class="glitch-layer" d="M29.29,0 H70.71 L100,29.29 V70.71 L70.71,100 H29.29 L0,70.71 V29.29 Z M34,34 H66 V66 H34 Z" fill="#4cff70" fill-rule="evenodd" />
+            </g>
+          </svg>
+        </div>
+      </div>
+      <div class="auth-title">Авторизация</div>
+      <form id="login-form" class="auth-form" action="#" method="post">
+        <label class="form-label" for="login-name">Имя пользователя</label>
+        <input id="login-name" class="form-input" type="text" placeholder="Введите имя" />
+        <label class="form-label" for="login-pass">Пароль</label>
+        <input id="login-pass" class="form-input" type="password" placeholder="Введите пароль" />
+        <button type="submit" class="button primary">Войти</button>
+      </form>
+      <div class="auth-register">
+        <div class="register-toggle" id="register-toggle">Создать</div>
+        <form class="register-panel" id="register-panel">
+          <label class="form-label" for="reg-name">Имя</label>
+          <input id="reg-name" class="form-input" type="text" placeholder="Ваше имя" />
+          <label class="form-label" for="reg-pass">Придумать пароль</label>
+          <input id="reg-pass" class="form-input" type="password" placeholder="Пароль" />
+          <label class="form-label" for="reg-group">Группа</label>
+          <select id="reg-group" class="form-input select">
+            <option value="c3-25">C3-25</option>
+          </select>
+          <div class="register-actions">
+            <button type="submit" class="button primary">Создать</button>
+            <button type="button" class="register-return" id="register-return">Вернуться</button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+  <main class="dashboard hidden" id="dashboard">
+    <div class="dashboard-layout">
+      <aside class="dashboard-sidebar hidden" id="dashboard-sidebar">
+        <div class="sidebar-section">
+          <button type="button" class="sidebar-button" id="favorites-button" title="Ваши файлы">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g><path d="M30.48 20.57H32v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="m7.62 22.09 0 -4.57 -1.52 0 0 -13.71 -1.52 0 0 1.52 -3.05 0 0 1.53 1.52 0 0 10.66 1.53 0 0 4.57 1.52 0 0 1.53 1.52 0 0 1.52 13.72 0 0 1.53 1.52 0 0 -3.05 3.05 0 0 6.09 1.52 0 0 -6.09 3.05 0 0 -1.53 -22.86 0z" fill="currentColor" stroke-width="1"></path><path d="M27.43 19.05h3.05v1.52h-3.05Z" fill="currentColor" stroke-width="1"></path><path d="M25.91 3.81h1.52v15.24h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M6.1 29.71h19.81v1.53H6.1Z" fill="currentColor" stroke-width="1"></path><path d="M21.34 8.38h1.52v3.05h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M19.81 11.43h1.53v1.52h-1.53Z" fill="currentColor" stroke-width="1"></path><path d="M18.29 6.86h3.05v1.52h-3.05Z" fill="currentColor" stroke-width="1"></path><path d="M18.29 19.05h3.05v1.52h-3.05Z" fill="currentColor" stroke-width="1"></path><path d="M18.29 12.95h1.52v1.53h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M16.77 17.52h1.52v1.53h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M16.77 14.48h1.52V16h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M16.77 8.38h1.52V9.9h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M15.24 16h1.53v1.52h-1.53Z" fill="currentColor" stroke-width="1"></path><path d="M15.24 9.9h1.53v1.53h-1.53Z" fill="currentColor" stroke-width="1"></path><path d="M13.72 14.48h1.52V16h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M13.72 8.38h1.52V9.9h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M12.2 17.52h3.04v1.53H12.2Z" fill="currentColor" stroke-width="1"></path><path d="M12.2 12.95h1.52v1.53H12.2Z" fill="currentColor" stroke-width="1"></path><path d="M10.67 6.86h3.05v1.52h-3.05Z" fill="currentColor" stroke-width="1"></path><path d="M10.67 11.43h1.53v1.52h-1.53Z" fill="currentColor" stroke-width="1"></path><path d="M9.15 8.38h1.52v3.05H9.15Z" fill="currentColor" stroke-width="1"></path><path d="m10.67 3.81 0 1.52 10.67 0 0 -1.52 4.57 0 0 -1.53 -4.57 0 0 -1.52 -10.67 0 0 1.52 -4.57 0 0 1.53 4.57 0z" fill="currentColor" stroke-width="1"></path><path d="m21.34 28.19 0 -1.52 -19.81 0 0 1.52 3.05 0 0 1.52 1.52 0 0 -1.52 15.24 0z" fill="currentColor" stroke-width="1"></path><path d="M0 6.86h1.53v19.81H0Z" fill="currentColor" stroke-width="1"></path></g></svg>
+            Избранное
+          </button>
+          <div class="sidebar-section-title">Пользователи группы</div>
+          <div class="sidebar-list" id="sidebar-users-list"></div>
+        </div>
+      </aside>
+      <section class="dashboard-content">
+        <div class="dashboard-files-panel" id="dashboard-files-panel">
+          <div class="dashboard-files-header">
+            <button type="button" class="button secondary icon-button hidden" id="folder-back-button" title="Назад">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g><path d="M30.48 12.19H32v7.62h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M28.95 19.81h1.53v3.05h-1.53Z" fill="currentColor" stroke-width="1"></path><path d="M28.95 9.14h1.53v3.05h-1.53Z" fill="currentColor" stroke-width="1"></path><path d="M27.43 22.86h1.52v3.04h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M27.43 6.09h1.52v3.05h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M25.9 25.9h1.53v1.53H25.9Z" fill="currentColor" stroke-width="1"></path><path d="M25.9 4.57h1.53v1.52H25.9Z" fill="currentColor" stroke-width="1"></path><path d="M22.86 27.43h3.04v1.52h-3.04Z" fill="currentColor" stroke-width="1"></path><path d="m24.38 12.19 -1.52 0 0 -1.52 -9.15 0 0 -3.05 -1.52 0 0 1.52 -1.52 0 0 1.53 -1.53 0 0 1.52 -1.52 0 0 1.52 -1.53 0 0 1.53 1.53 0 0 1.52 1.52 0 0 1.53 1.53 0 0 1.52 1.52 0 0 1.52 1.52 0 0 -3.04 6.1 0 0 1.52 1.52 0 0 1.52 -1.52 0 0 1.53 -1.52 0 0 1.52 3.04 0 0 -1.52 3.05 0 0 -1.53 1.52 0 0 -7.62 -1.52 0 0 -1.52z" fill="currentColor" stroke-width="1"></path><path d="M22.86 3.05h3.04v1.52h-3.04Z" fill="currentColor" stroke-width="1"></path><path d="M19.81 28.95h3.05v1.53h-3.05Z" fill="currentColor" stroke-width="1"></path><path d="M19.81 1.52h3.05v1.53h-3.05Z" fill="currentColor" stroke-width="1"></path><path d="M12.19 30.48h7.62V32h-7.62Z" fill="currentColor" stroke-width="1"></path><path d="M12.19 0h7.62v1.52h-7.62Z" fill="currentColor" stroke-width="1"></path><path d="M9.14 28.95h3.05v1.53H9.14Z" fill="currentColor" stroke-width="1"></path><path d="M9.14 1.52h3.05v1.53H9.14Z" fill="currentColor" stroke-width="1"></path><path d="M6.09 27.43h3.05v1.52H6.09Z" fill="currentColor" stroke-width="1"></path><path d="M6.09 3.05h3.05v1.52H6.09Z" fill="currentColor" stroke-width="1"></path><path d="M4.57 25.9h1.52v1.53H4.57Z" fill="currentColor" stroke-width="1"></path><path d="M4.57 4.57h1.52v1.52H4.57Z" fill="currentColor" stroke-width="1"></path><path d="M3.05 22.86h1.52v3.04H3.05Z" fill="currentColor" stroke-width="1"></path><path d="M3.05 6.09h1.52v3.05H3.05Z" fill="currentColor" stroke-width="1"></path><path d="M1.52 19.81h1.53v3.05H1.52Z" fill="currentColor" stroke-width="1"></path><path d="M1.52 9.14h1.53v3.05H1.52Z" fill="currentColor" stroke-width="1"></path><path d="M0 12.19h1.52v7.62H0Z" fill="currentColor" stroke-width="1"></path></g></svg>
+            </button>
+            <div class="dashboard-files-title" id="dashboard-files-title">Файлы</div>
+            <div class="dashboard-files-actions">
+              <button type="button" class="button secondary icon-button" id="create-folder-button" title="Создать папку">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g><path d="m30.472 3.045 -1.52 0 0 -1.52 -1.52 0 0 -1.53 -21.34 0 0 12.2 -4.57 0 0 1.52 7.62 0 0 -1.52 -1.52 0 0 -10.67 16.76 0 0 6.09 6.09 0 0 15.24 -1.52 0 0 3.05 1.52 0 0 4.57 1.53 0 0 -25.9 -1.53 0 0 -1.53z" fill="currentColor" stroke-width="1"></path><path d="M7.622 30.475h22.85v1.52H7.622Z" fill="currentColor" stroke-width="1"></path><path d="M27.432 19.805h1.52v3.05h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M25.902 16.765h1.53v3.04h-1.53Z" fill="currentColor" stroke-width="1"></path><path d="M10.672 15.235h15.23v1.53h-15.23Z" fill="currentColor" stroke-width="1"></path><path d="M19.812 7.615h1.52v1.53h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M15.242 10.665h4.57v1.53h-4.57Z" fill="currentColor" stroke-width="1"></path><path d="M13.712 7.615h1.53v1.53h-1.53Z" fill="currentColor" stroke-width="1"></path><path d="M9.142 13.715h1.53v1.52h-1.53Z" fill="currentColor" stroke-width="1"></path><path d="M6.092 27.425h1.53v3.05h-1.53Z" fill="currentColor" stroke-width="1"></path><path d="M4.572 24.385h1.52v3.04h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M3.052 21.335h1.52v3.05h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M1.522 18.285h1.53v3.05h-1.53Z" fill="currentColor" stroke-width="1"></path><path d="M0.002 13.715h1.52v4.57H0.002Z" fill="currentColor" stroke-width="1"></path></g></svg>
+              </button>
+              <button type="button" class="button secondary icon-button" id="create-file-button" title="Создать файл">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g><path d="M30.48 12.19H32v16.76h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M30.48 3.05H32v4.57h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M28.95 28.95h1.53v1.53h-1.53Z" fill="currentColor" stroke-width="1"></path><path d="M28.95 7.62h1.53v1.52h-1.53Z" fill="currentColor" stroke-width="1"></path><path d="M28.95 1.52h1.53v1.53h-1.53Z" fill="currentColor" stroke-width="1"></path><path d="M27.43 9.14h1.52v1.53h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M27.43 6.1h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M3.05 30.48h25.9V32H3.05Z" fill="currentColor" stroke-width="1"></path><path d="M25.91 10.67h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M25.91 4.57v1.53h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M24.38 0h4.57v1.52h-4.57Z" fill="currentColor" stroke-width="1"></path><path d="M24.38 12.19h1.53v1.52h-1.53Z" fill="currentColor" stroke-width="1"></path><path d="M24.38 6.1h1.53v1.52h-1.53Z" fill="currentColor" stroke-width="1"></path><path d="M24.38 3.05h1.53v1.52h-1.53Z" fill="currentColor" stroke-width="1"></path><path d="M22.86 13.71h1.52v1.53h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M22.86 7.62h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M22.86 1.52h1.52v1.53h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M21.33 15.24h1.53v1.52h-1.53Z" fill="currentColor" stroke-width="1"></path><path d="M21.33 9.14h1.53v1.53h-1.53Z" fill="currentColor" stroke-width="1"></path><path d="M21.33 3.05h1.53v1.52h-1.53Z" fill="currentColor" stroke-width="1"></path><path d="M19.81 16.76h1.52v1.53h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M19.81 10.67h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M19.81 4.57h1.52V6.1h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M18.29 15.24h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M18.29 12.19h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M18.29 6.1h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="m16.76 16.76 -1.52 0 0 -1.52 -1.53 0 0 -3.05 -1.52 0 0 7.62 7.62 0 0 -1.52 -3.05 0 0 -1.53z" fill="currentColor" stroke-width="1"></path><path d="M16.76 13.71h1.53v1.53h-1.53Z" fill="currentColor" stroke-width="1"></path><path d="M16.76 7.62h1.53v1.52h-1.53Z" fill="currentColor" stroke-width="1"></path><path d="M15.24 12.19h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M15.24 9.14h1.52v1.53h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M13.71 10.67h1.53v1.52h-1.53Z" fill="currentColor" stroke-width="1"></path><path d="M3.05 1.52h15.24v1.53H3.05Z" fill="currentColor" stroke-width="1"></path><path d="M1.52 28.95h1.53v1.53H1.52Z" fill="currentColor" stroke-width="1"></path><path d="M1.52 3.05h1.53v1.52H1.52Z" fill="currentColor" stroke-width="1"></path><path d="M0 4.57h1.52v24.38H0Z" fill="currentColor" stroke-width="1"></path></g></svg>
+              </button>
+              <button type="button" class="button secondary icon-button" id="upload-file-button" title="Загрузить файл">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g><path d="m28.955 22.85 -25.9 0 0 -15.23 -1.53 0 0 18.28 1.53 0 0 1.53 9.14 0 0 1.52 1.52 0 0 -1.52 4.57 0 0 1.52 1.53 0 0 -1.52 9.14 0 0 -1.53 1.52 0 0 -18.28 -1.52 0 0 15.23z" fill="currentColor" stroke-width="1"></path><path d="M21.335 6.09h7.62v1.53h-7.62Z" fill="currentColor" stroke-width="1"></path><path d="m12.195 30.47 0 -1.52 -1.52 0 0 3.05 10.66 0 0 -3.05 -1.52 0 0 1.52 -7.62 0z" fill="currentColor" stroke-width="1"></path><path d="M13.715 3.05h4.57v1.52h-4.57Z" fill="currentColor" stroke-width="1"></path><path d="M13.715 0h4.57v1.52h-4.57Z" fill="currentColor" stroke-width="1"></path><path d="m16.765 19.81 0 -1.53 1.52 0 0 -1.52 1.53 0 0 -1.52 1.52 0 0 -1.53 -3.05 0 0 -7.62 -4.57 0 0 7.62 -3.04 0 0 1.53 1.52 0 0 1.52 1.52 0 0 1.52 1.53 0 0 1.53 1.52 0z" fill="currentColor" stroke-width="1"></path><path d="M3.055 6.09h7.62v1.53h-7.62Z" fill="currentColor" stroke-width="1"></path></g></svg>
+              </button>
+              <input type="file" id="upload-file-input" multiple class="hidden-input" />
+            </div>
+          </div>
+          <div class="dashboard-selection-actions hidden" id="dashboard-selection-actions">
+            <div class="selection-info" id="selection-info">Выбрано: 0</div>
+            <div class="selection-buttons">
+              <button type="button" class="button secondary" id="delete-selection-button">Удалить</button>
+              <button type="button" class="button secondary" id="copy-selection-button">Копировать</button>
+              <button type="button" class="button secondary" id="move-selection-button">Перенести</button>
+              <button type="button" class="button secondary" id="clear-selection-button">Сбросить</button>
+            </div>
+          </div>
+          <div class="dashboard-files-list file-grid" id="dashboard-files-list"></div>
+          <div id="custom-context-menu" class="custom-context-menu hidden" role="menu" aria-hidden="true"></div>
+          <div id="site-action-modal" class="site-action-modal" role="dialog" aria-modal="true" aria-labelledby="site-action-modal-title" aria-describedby="site-action-modal-message">
+            <div class="site-action-card">
+              <button type="button" class="site-action-close" id="site-action-modal-close">×</button>
+              <div class="site-action-title" id="site-action-modal-title"></div>
+              <div class="site-action-message" id="site-action-modal-message"></div>
+              <input type="text" id="site-action-modal-input" class="site-action-input" />
+              <textarea id="site-action-modal-textarea" class="site-action-textarea"></textarea>
+              <img id="site-action-modal-image" class="site-action-modal-image" alt="Preview" />
+              <div class="site-action-buttons">
+                <button type="button" class="button secondary" id="site-action-modal-secondary">Отмена</button>
+                <button type="button" class="button primary" id="site-action-modal-primary">OK</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="dashboard-files-panel" id="games-menu-panel">
+          <div class="dashboard-files-title">Игры</div>
+          <div class="dashboard-files-list games-menu-list">
+            <a class="game-card" href="tower-climb.html">
+              <div class="game-card-image" style="background-image: url('https://s10.iimage.su/s/04/th_gvnjjCIx1ZaO5HXonHv1EZkqdW3rHVMlEQnP96qyw.png');"></div>
+              <div class="game-card-title">Врата Башни</div>
+            </a>
+            <a class="game-card" href="CS16.html">
+              <div class="game-card-image" style="background-image: url('https://s10.iimage.su/s/06/th_gwejO3VxjYoIDWAaRq8VhATEq4kJA7RPpyLbsH48b.png');"></div>
+              <div class="game-card-title">Counter Strike</div>
+            </a>
+            <a class="game-card" href="pogonya.html">
+              <div class="game-card-image" style="background-image: url('https://s10.iimage.su/s/06/th_gt18s3LxESCKaBWfvXcsTHuYdRVqFUtich4jI31td.png');"></div>
+              <div class="game-card-title">Погоня</div>
+            </a>
+            <a class="game-card" href="gridlock.html">
+              <div class="game-card-image" style="background-image: url('https://s10.iimage.su/s/06/th_g5z6Krmxzj9ZeEwMqJzXD3KOJQg5QSKJBIfUVJk4E.png');"></div>
+              <div class="game-card-title">Gridlock</div>
+            </a>
+            <a class="game-card" href="cross-the-road.html">
+              <div class="game-card-image" style="background-image: url('https://s10.iimage.su/s/06/th_gq41VakxtKRPtbo7ChaHT6wmF6REIzXjV2etnewby.png');"></div>
+              <div class="game-card-title">Cross the Road</div>
+            </a>
+            <a class="game-card" href="mahjong.html">
+              <div class="game-card-image" style="background-image: url('https://s10.iimage.su/s/04/th_gcoNFZwxDEzTaOw427aLRI28MsPvbSOYzBAc6EPRt.png');"></div>
+              <div class="game-card-title">Маджонг Древних</div>
+            </a>
+            <a class="game-card" href="basketball.html">
+              <div class="game-card-image" style="background-image: url('https://s10.iimage.su/s/04/th_gFiXubXxk0FhTe2iUkOAolNR0LHgpfHLMO85QEgCW.png');"></div>
+              <div class="game-card-title">Баскетбол</div>
+            </a>
+            <a class="game-card" href="minecraft.html">
+              <div class="game-card-image" style="background-image: url('https://s10.iimage.su/s/04/th_g5MaV0KxYkJNFplbCOPp5S5hUUlA69QHic1EGjAjX.png');"></div>
+              <div class="game-card-title">Minecraft</div>
+            </a>
+            <a class="game-card" href="geometry-dash.html">
+              <div class="game-card-image" style="background-image: url('https://s10.iimage.su/s/04/th_gcSGT7xxmRGossSRnIWI6suJPn7TFuhjh3h1NG1J5.png');"></div>
+              <div class="game-card-title">Geometry Dash</div>
+            </a>
+            <a class="game-card" href="slots.html">
+              <div class="game-card-image" style="background-image: url('https://s10.iimage.su/s/06/th_gDwA3aNxXON6lzufmef3UzNCsP36XoOt0v87VlNF6.png');"></div>
+              <div class="game-card-title">Слоты</div>
+            </a>
+            <a class="game-card" href="platformer.html">
+              <div class="game-card-image" style="background-image: url('https://s10.iimage.su/s/06/th_gMDaCdnxJoVJTiCqff1Pdew3YKfD8dA0J14KbOuLV.png');"></div>
+              <div class="game-card-title">Платформер</div>
+            </a>
+            <a class="game-card" href="night-races.html">
+              <div class="game-card-image" style="background-image: url('https://s10.iimage.su/s/06/th_gzZ8xWDxn8UQ3DV1hX7oz57r54fwf2wUZnPfkDaez.png');"></div>
+              <div class="game-card-title">Ночные гонки</div>
+            </a>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const loginForm = document.getElementById('login-form');
+    const registerToggle = document.getElementById('register-toggle');
+    const registerPanel = document.getElementById('register-panel');
+    const authScreen = document.querySelector('.auth-screen');
+    const dashboard = document.getElementById('dashboard');
+    const headerMenu = document.getElementById('header-menu');
+    const headerMenuPanel = document.getElementById('header-menu-panel');
+    const logoutButton = document.getElementById('logout-button');
+    const gamesButton = document.getElementById('games-button');
+    const registerReturn = document.getElementById('register-return');
+    const loginNameField = document.getElementById('login-name');
+    const regNameField = document.getElementById('reg-name');
+
+    const groupBadge = document.getElementById('group-badge');
+    const headerSearchContainer = document.getElementById('header-search-container');
+    const headerSearchInput = document.getElementById('header-search-input');
+    const searchButton = document.getElementById('search-button');
+    const sidebarUsersList = document.getElementById('sidebar-users-list');
+    const favoritesButton = document.getElementById('favorites-button');
+    const dashboardSidebar = document.getElementById('dashboard-sidebar');
+    const dashboardFilesPanel = document.getElementById('dashboard-files-panel');
+    const dashboardFilesActions = document.querySelector('.dashboard-files-actions');
+    const gamesMenuPanel = document.getElementById('games-menu-panel');
+    const dashboardFilesList = document.getElementById('dashboard-files-list');
+    const customContextMenu = document.getElementById('custom-context-menu');
+    const uploadFileInput = document.getElementById('upload-file-input');
+    const uploadFileButton = document.getElementById('upload-file-button');
+    const createFolderButton = document.getElementById('create-folder-button');
+    const createFileButton = document.getElementById('create-file-button');
+    const folderBackButton = document.getElementById('folder-back-button');
+    const selectionActions = document.getElementById('dashboard-selection-actions');
+    const selectionInfo = document.getElementById('selection-info');
+    const deleteSelectionButton = document.getElementById('delete-selection-button');
+    const copySelectionButton = document.getElementById('copy-selection-button');
+    const moveSelectionButton = document.getElementById('move-selection-button');
+    const clearSelectionButton = document.getElementById('clear-selection-button');
+    const siteActionModal = document.getElementById('site-action-modal');
+    const siteActionModalClose = document.getElementById('site-action-modal-close');
+    const siteActionModalTitle = document.getElementById('site-action-modal-title');
+    const siteActionModalMessage = document.getElementById('site-action-modal-message');
+    const siteActionModalInput = document.getElementById('site-action-modal-input');
+    const siteActionModalTextarea = document.getElementById('site-action-modal-textarea');
+    const siteActionModalCard = document.querySelector('.site-action-card');
+    const siteActionModalSecondary = document.getElementById('site-action-modal-secondary');
+    const siteActionModalPrimary = document.getElementById('site-action-modal-primary');
+    let siteActionModalDragState = { dragging: false, offsetX: 0, offsetY: 0 };
+    let siteActionModalConfirm = null;
+    const selectedItems = new Set();
+    let lastSelectedIndex = null;
+
+    let activeView = 'user';
+    let activeOwner = '';
+    let currentFolderPath = '';
+
+    const supabaseUrl = 'https://nxwyrmavhyjydotyliig.supabase.co';
+    const supabaseAnonKey = 'sb_publishable_3Nv0KLYEMVyoT3V9L1xpiw_iO7YlzaH';
+    const supabaseClient = supabase.createClient(supabaseUrl, supabaseAnonKey);
+    let uploadedFilesCache = [];
+
+    let usersCache = [];
+    const supabaseHeaders = {
+      apikey: supabaseAnonKey,
+      Authorization: `Bearer ${supabaseAnonKey}`,
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    };
+
+    const fetchSupabase = async (path, options = {}) => {
+      const response = await fetch(`${supabaseUrl}/rest/v1/${path}`, {
+        ...options,
+        headers: {
+          ...supabaseHeaders,
+          ...(options.headers || {}),
+        },
+      });
+      const text = await response.text();
+      let data = null;
+      try {
+        data = text ? JSON.parse(text) : null;
+      } catch {
+        data = text;
+      }
+      if (!response.ok) {
+        throw { status: response.status, statusText: response.statusText, body: data };
+      }
+      return data;
+    };
+
+    const refreshRegisteredUsers = async () => {
+      try {
+        const data = await fetchSupabase('chemk_users?select=*');
+        usersCache = data.map(user => ({
+          id: user.id,
+          username: user.username,
+          password: user.password,
+          group: user.group_name || '',
+          created_at: user.created_at,
+        }));
+      } catch (error) {
+        console.error('Ошибка Supabase при загрузке пользователей:', error);
+        usersCache = [];
+      }
+      return usersCache;
+    };
+
+    const findRegisteredUser = username => usersCache.find(user => user.username === username);
+    const isUsernameTaken = username => !!findRegisteredUser(username);
+
+    const getUploadedFiles = () => uploadedFilesCache;
+
+    const refreshUploadedFiles = async () => {
+      const currentUser = localStorage.getItem('chemkUser') || '';
+      const group = localStorage.getItem('chemkGroup') || '';
+      try {
+        const data = await fetchSupabase('chemk_files?select=*');
+        uploadedFilesCache = data
+          .filter(file => file.group_name === group || file.owner === currentUser)
+          .map(file => ({
+            ...file,
+            isFavorite: file.is_favorite || false,
+            path: file.path || '',
+            type: file.type || 'file',
+            group: file.group_name || '',
+            timestamp: Number(file.timestamp) || Date.now(),
+          }));
+      } catch (error) {
+        console.error('Ошибка Supabase при загрузке файлов:', error);
+        uploadedFilesCache = [];
+      }
+      return uploadedFilesCache;
+    };
+
+    const createUploadedItems = async items => {
+      if (items.length === 0) return;
+      try {
+        await fetchSupabase('chemk_files', {
+          method: 'POST',
+          body: JSON.stringify(items),
+        });
+      } catch (error) {
+        console.error('Ошибка Supabase при сохранении файлов:', error);
+        alert('Ошибка при сохранении файлов. Попробуйте ещё раз.');
+      }
+      await refreshUploadedFiles();
+    };
+
+    const updateUploadedItem = async (timestamp, changes) => {
+      try {
+        await fetchSupabase(`chemk_files?timestamp=eq.${timestamp}`, {
+          method: 'PATCH',
+          body: JSON.stringify(changes),
+        });
+        uploadedFilesCache = uploadedFilesCache.map(file => {
+          if (file.timestamp !== timestamp) return file;
+          return {
+            ...file,
+            ...changes,
+            isFavorite: changes.hasOwnProperty('is_favorite') ? changes.is_favorite : file.isFavorite,
+            path: changes.path !== undefined ? changes.path : file.path,
+            name: changes.name !== undefined ? changes.name : file.name,
+            content: changes.content !== undefined ? changes.content : file.content,
+          };
+        });
+      } catch (error) {
+        console.error('Ошибка Supabase при обновлении файла:', error);
+        alert('Ошибка при сохранении изменений.');
+      }
+    };
+
+    const deleteUploadedItem = async timestamp => {
+      try {
+        await fetchSupabase(`chemk_files?timestamp=eq.${timestamp}`, {
+          method: 'DELETE',
+        });
+      } catch (error) {
+        console.error('Ошибка Supabase при удалении файла:', error);
+        alert('Ошибка при удалении файла.');
+      }
+      await refreshUploadedFiles();
+    };
+
+    const deleteUploadedItems = async timestamps => {
+      if (timestamps.length === 0) return;
+      try {
+        await fetchSupabase(`chemk_files?timestamp=in.(${timestamps.join(',')})`, {
+          method: 'DELETE',
+        });
+      } catch (error) {
+        console.error('Ошибка Supabase при удалении файлов:', error);
+        alert('Ошибка при удалении файлов.');
+      }
+      await refreshUploadedFiles();
+    };
+
+    const downloadUploadedFile = file => {
+      if (!file.content) {
+        alert('Содержимое файла отсутствует.');
+        return;
+      }
+      try {
+        const binary = atob(file.content);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i += 1) {
+          bytes[i] = binary.charCodeAt(i);
+        }
+        const blob = new Blob([bytes], { type: 'application/octet-stream' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = file.name;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      } catch (error) {
+        console.error('Ошибка при загрузке файла:', error);
+        alert('Не удалось скачать файл.');
+      }
+    };
+
+    const encodeStringToBase64 = text => {
+      const utf8 = new TextEncoder().encode(text);
+      let binary = '';
+      for (let i = 0; i < utf8.length; i += 1) {
+        binary += String.fromCharCode(utf8[i]);
+      }
+      return btoa(binary);
+    };
+
+    const decodeBase64ToString = base64 => {
+      if (!base64) return '';
+      const binary = atob(base64);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i += 1) {
+        bytes[i] = binary.charCodeAt(i);
+      }
+      return new TextDecoder().decode(bytes);
+    };
+
+    const isRussianName = name => /^[А-ЯЁа-яё ]+$/.test(name);
+
+    const normalizeRussianName = value => value.replace(/[^А-ЯЁа-яё ]/gi, '');
+
+    loginNameField.addEventListener('input', () => {
+      loginNameField.value = normalizeRussianName(loginNameField.value);
+    });
+
+    regNameField.addEventListener('input', () => {
+      regNameField.value = normalizeRussianName(regNameField.value);
+    });
+
+
+    const renderGroupUsers = async (searchQuery = '') => {
+      await refreshRegisteredUsers();
+      sidebarUsersList.innerHTML = '';
+      const group = localStorage.getItem('chemkGroup') || '';
+      const currentUser = localStorage.getItem('chemkUser') || '';
+      const matchedUsers = usersCache
+        .filter(user => user.group === group)
+        .filter(user => !searchQuery || user.username.toLowerCase().includes(searchQuery.toLowerCase()));
+
+      matchedUsers.sort((a, b) => {
+        if (a.username === currentUser) return -1;
+        if (b.username === currentUser) return 1;
+        return a.username.localeCompare(b.username, 'ru', { sensitivity: 'base' });
+      });
+
+      if (matchedUsers.length === 0) {
+        const emptyItem = document.createElement('div');
+        emptyItem.className = 'sidebar-item';
+        emptyItem.textContent = 'Пользователей нет';
+        sidebarUsersList.appendChild(emptyItem);
+        return;
+      }
+
+      matchedUsers.forEach(user => {
+        const name = user.username;
+        const item = document.createElement('div');
+        item.className = 'sidebar-item';
+        item.dataset.username = name;
+        item.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true">
+            <g>
+              <path d="M30.48 12.19H32v7.62h-1.52Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M28.95 19.81h1.53v3.04h-1.53Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M27.43 22.85h1.52v3.05h-1.52Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M27.43 6.09h1.52v3.05h-1.52Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M25.91 25.9h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M25.91 4.57h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M22.86 27.42h3.05v1.53h-3.05Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M22.86 3.04h3.05v1.53h-3.05Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M19.81 28.95h3.05v1.52h-3.05Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M19.81 1.52h3.05v1.52h-3.05Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M12.19 30.47h7.62V32h-7.62Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M13.72 22.85h6.09v1.53h-6.09Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M12.19 0h7.62v1.52h-7.62Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M12.19 21.33h1.53v1.52h-1.53Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M9.14 28.95h3.05v1.52H9.14Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M9.14 1.52h3.05v1.52H9.14Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M6.1 27.42h3.04v1.53H6.1Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M6.1 3.04h3.04v1.53H6.1Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M4.57 25.9H6.1v1.52H4.57Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M4.57 4.57H6.1v1.52H4.57Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M3.05 22.85h1.52v3.05H3.05Z" fill="currentColor" stroke-width="1"></path>
+              <path d="m3.05 15.23 1.52 0 0 1.53 1.53 0 0 1.52 6.09 0 0 -1.52 1.53 0 0 -1.53 1.52 0 0 -1.52 3.05 0 0 1.52 1.52 0 0 1.53 1.52 0 0 1.52 6.1 0 0 -1.52 1.52 0 0 -4.57 1.53 0 0 -3.05 -1.53 0 0 1.52 -25.9 0 0 -1.52 -1.52 0 0 3.05 1.52 0 0 3.04z" fill="currentColor" stroke-width="1"></path>
+              <path d="M3.05 6.09h1.52v3.05H3.05Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M1.53 19.81h1.52v3.04H1.53Z" fill="currentColor" stroke-width="1"></path>
+              <path d="M0 12.19h1.53v7.62H0Z" fill="currentColor" stroke-width="1"></path>
+            </g>
+          </svg>
+          ${name}${name === currentUser ? ' (вы)' : ''}
+        `;
+        item.addEventListener('click', () => {
+          favoritesButton.classList.remove('active');
+          document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+          item.classList.add('active');
+          activeView = 'user';
+          activeOwner = name;
+          renderFilesPanel('user', name);
+        });
+        sidebarUsersList.appendChild(item);
+      });
+    };
+
+    const setLoggedState = async (username = '', group = '') => {
+      const storedGroup = group || localStorage.getItem('chemkGroup') || '';
+      localStorage.setItem('chemkLogged', '1');
+      localStorage.setItem('chemkUser', username);
+      localStorage.setItem('chemkGroup', storedGroup);
+      authScreen.classList.add('hidden');
+      dashboard.classList.remove('hidden');
+      headerMenu.classList.remove('hidden');
+      headerSearchContainer.style.display = 'flex';
+      headerSearchContainer.classList.remove('search-active');
+      headerSearchInput.value = '';
+      headerMenuPanel.classList.remove('visible');
+      if (storedGroup) {
+        groupBadge.textContent = storedGroup;
+        groupBadge.classList.remove('hidden');
+      } else {
+        groupBadge.classList.add('hidden');
+      }
+      dashboardSidebar.classList.remove('hidden');
+      gamesMenuPanel.classList.add('hidden');
+      dashboardFilesPanel.classList.remove('hidden');
+      await refreshUploadedFiles();
+      await renderGroupUsers();
+      activeView = 'user';
+      activeOwner = username;
+      renderFilesPanel('user', username);
+    };
+
+    const setLoggedOut = () => {
+      loginForm.classList.remove('hidden');
+      registerPanel.classList.remove('visible');
+      registerToggle.classList.remove('hidden');
+      document.getElementById('login-name').focus();
+      localStorage.removeItem('chemkLogged');
+      localStorage.removeItem('chemkUser');
+      dashboard.classList.add('hidden');
+      authScreen.classList.remove('hidden');
+      headerMenu.classList.add('hidden');
+      headerMenuPanel.classList.remove('visible');
+      dashboardSidebar.classList.add('hidden');
+      headerSearchContainer.classList.remove('search-active');
+      headerSearchContainer.style.display = 'none';
+      headerSearchInput.value = '';
+    };
+
+    const initState = async () => {
+      if (localStorage.getItem('chemkLogged') === '1') {
+        const username = localStorage.getItem('chemkUser') || '';
+        const group = localStorage.getItem('chemkGroup') || '';
+        await setLoggedState(username, group);
+      } else {
+        setLoggedOut();
+      }
+    };
+
+    loginForm.addEventListener('submit', async event => {
+      event.preventDefault();
+      const username = loginNameField.value.trim();
+      const password = document.getElementById('login-pass').value.trim();
+      if (!username || !password) {
+        alert('Введите имя пользователя и пароль');
+        return;
+      }
+      if (!isRussianName(username)) {
+        alert('Имя должно содержать только русские буквы и пробелы');
+        return;
+      }
+      await refreshRegisteredUsers();
+      const user = findRegisteredUser(username);
+      if (!user) {
+        alert('Пользователь не найден. Сначала зарегистрируйтесь.');
+        return;
+      }
+      if (user.password !== password) {
+        alert('Неверный пароль');
+        return;
+      }
+      const group = user.group || localStorage.getItem('chemkGroup') || '';
+      await setLoggedState(username, group);
+    });
+
+    registerToggle.addEventListener('click', () => {
+      registerPanel.classList.add('visible');
+      loginForm.classList.add('hidden');
+      registerToggle.classList.add('hidden');
+    });
+
+    registerReturn.addEventListener('click', () => {
+      registerPanel.classList.remove('visible');
+      loginForm.classList.remove('hidden');
+      registerToggle.classList.remove('hidden');
+    });
+
+    registerPanel.addEventListener('submit', async event => {
+      event.preventDefault();
+      const username = regNameField.value.trim();
+      const password = document.getElementById('reg-pass').value.trim();
+      const group = document.getElementById('reg-group').value.trim();
+      if (!username || !password) {
+        alert('Введите имя и пароль для регистрации');
+        return;
+      }
+      if (!isRussianName(username)) {
+        alert('Имя должно содержать только русские буквы и пробелы');
+        return;
+      }
+      await refreshRegisteredUsers();
+      if (isUsernameTaken(username)) {
+        alert('Пользователь с таким именем уже зарегистрирован');
+        return;
+      }
+      try {
+        await fetchSupabase('chemk_users', {
+          method: 'POST',
+          body: JSON.stringify([{ username, password, group_name: group, created_at: new Date().toISOString() }]),
+        });
+      } catch (error) {
+        console.error('Ошибка Supabase при регистрации:', error);
+        alert('Не удалось зарегистрироваться. Попробуйте ещё раз.');
+        return;
+      }
+      await setLoggedState(username, group);
+    });
+
+    headerMenu.addEventListener('click', () => {
+      headerMenuPanel.classList.toggle('visible');
+    });
+
+    gamesButton.addEventListener('click', () => {
+      headerMenuPanel.classList.remove('visible');
+      if (gamesMenuPanel.classList.contains('hidden')) {
+        dashboardFilesPanel.classList.add('hidden');
+        gamesMenuPanel.classList.remove('hidden');
+        clearSidebarSelection();
+      } else {
+        gamesMenuPanel.classList.add('hidden');
+        dashboardFilesPanel.classList.remove('hidden');
+      }
+    });
+
+    logoutButton.addEventListener('click', setLoggedOut);
+
+    const renderFilesPanel = (type, owner) => {
+      gamesMenuPanel.classList.add('hidden');
+      dashboardFilesPanel.classList.remove('hidden');
+      const currentUser = localStorage.getItem('chemkUser') || '';
+      const previousOwner = activeOwner;
+      const previousView = activeView;
+      activeView = type;
+      activeOwner = owner;
+      const isFavorites = type === 'favorites';
+      const isOwnUserView = type === 'user' && owner === currentUser;
+      const showActions = isFavorites || isOwnUserView;
+      dashboardFilesActions.classList.toggle('hidden', !showActions);
+      if (previousView !== type || previousOwner !== owner) {
+        currentFolderPath = '';
+      }
+      const pathMatch = item => {
+        if (isFavorites) {
+          return item.owner === currentUser && item.isFavorite && item.path === currentFolderPath;
+        }
+        return item.path === currentFolderPath && item.owner === owner;
+      };
+      let files = getUploadedFiles().filter(pathMatch);
+      let panelTitle = '';
+      if (isFavorites) {
+        panelTitle = currentFolderPath ? `Избранное: ${currentFolderPath}` : 'Избранное';
+      } else {
+        files = files.filter(file => !file.isFavorite);
+        panelTitle = owner === currentUser ? 'Ваши файлы' : `Файлы ${owner}`;
+      }
+      document.getElementById('dashboard-files-title').textContent = panelTitle;
+      if (folderBackButton) {
+        folderBackButton.classList.toggle('hidden', currentFolderPath === '');
+      }
+      dashboardFilesList.innerHTML = '';
+      if (files.length === 0) {
+        const emptyItem = document.createElement('div');
+        emptyItem.className = 'empty-state';
+        emptyItem.textContent = 'Здесь пока нет файлов';
+        dashboardFilesList.appendChild(emptyItem);
+        updateSelectionUI();
+        return;
+      }
+      files.forEach((file, index) => {
+        const item = document.createElement('div');
+        item.className = 'file-card';
+        const isImage = file.type === 'file' && isImageFile(file.name);
+      const iconSvg = file.type === 'folder'
+          ? `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M8.41421 1H1v22h22V4H11.4142L8.41421 1Z"></path></svg>`
+          : isImage
+            ? `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M16 0h.4142L22 5.58579V6h-6V0Zm-2 0H2v24h20V8h-8V0Z"></path><polygon fill="#000" points="6.5,17.5 11.5,10 16.5,17.5"/><polygon fill="#000" points="11,15 15.5,10 19,15"/><circle cx="15.2" cy="8.5" r="1.6" fill="#000"/></svg>`
+            : `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M16 0h.4142L22 5.58579V6h-6V0Zm-2 0H2v24h20V8h-8V0Z"></path></svg>`;
+        item.dataset.timestamp = String(file.timestamp);
+        item.dataset.type = file.type;
+        item.innerHTML = `
+          ${iconSvg}
+          <div class="file-card-name">${file.name}</div>
+        `;
+        item.title = file.type === 'folder'
+          ? currentUser === file.owner
+            ? 'Нажмите, чтобы открыть или переименовать папку'
+            : 'Открыть папку'
+          : currentUser === file.owner
+            ? 'Нажмите, чтобы переименовать или скачать'
+            : 'Ctrl+клик, чтобы выделить; дважды клик для просмотра';
+        let holdTimer = null;
+        let holdTriggered = false;
+        const clearHoldTimer = () => {
+          if (holdTimer) {
+            clearTimeout(holdTimer);
+            holdTimer = null;
+          }
+        };
+
+        item.addEventListener('mousedown', event => {
+          if (event.button !== 0) return;
+          const currentUser = localStorage.getItem('chemkUser') || '';
+          if (currentUser !== file.owner) return;
+          holdTriggered = false;
+          holdTimer = setTimeout(() => {
+            holdTriggered = true;
+            toggleSelection(file);
+          }, 400);
+        });
+
+        item.addEventListener('mouseup', clearHoldTimer);
+        item.addEventListener('mouseleave', clearHoldTimer);
+
+        item.addEventListener('click', event => {
+          if (holdTriggered) {
+            holdTriggered = false;
+            return;
+          }
+          const currentUser = localStorage.getItem('chemkUser') || '';
+          const isOwner = currentUser === file.owner;
+          if ((event.ctrlKey || event.metaKey) && isOwner) {
+            toggleSelection(file);
+            return;
+          }
+          if (file.type === 'folder') {
+            currentFolderPath = currentFolderPath ? `${currentFolderPath}/${file.name}` : file.name;
+            renderFilesPanel(type, owner);
+            return;
+          }
+
+          if (currentUser === file.owner) {
+            createContextMenuForFile(event, file);
+            return;
+          }
+
+          return;
+        });
+        item.addEventListener('dblclick', () => {
+          if (file.type === 'folder') {
+            currentFolderPath = currentFolderPath ? `${currentFolderPath}/${file.name}` : file.name;
+            renderFilesPanel(type, owner);
+            return;
+          }
+          if (file.type === 'file' && (file.name.toLowerCase().endsWith('.txt') || isImageFile(file.name))) {
+            openTextViewerModal(file);
+          }
+        });
+        dashboardFilesList.appendChild(item);
+      });
+      updateSelectionUI();
+    };
+
+    const clearSidebarSelection = () => {
+      document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+      if (favoritesButton) favoritesButton.classList.remove('active');
+    };
+
+    const updateSelectionUI = () => {
+      if (!selectionActions) return;
+      const count = selectedItems.size;
+      if (count > 0) {
+        selectionActions.classList.remove('hidden');
+        selectionInfo.textContent = `Выбрано: ${count}`;
+      } else {
+        selectionActions.classList.add('hidden');
+        selectionInfo.textContent = 'Выбрано: 0';
+      }
+      document.querySelectorAll('.file-card').forEach(card => {
+        const timestamp = card.dataset.timestamp;
+        if (timestamp && selectedItems.has(timestamp)) {
+          card.classList.add('selected');
+        } else {
+          card.classList.remove('selected');
+        }
+      });
+    };
+
+    const clearSelection = () => {
+      selectedItems.clear();
+      lastSelectedIndex = null;
+      updateSelectionUI();
+    };
+
+    const toggleSelection = file => {
+      const currentUser = localStorage.getItem('chemkUser') || '';
+      if (currentUser !== file.owner) return;
+      const key = String(file.timestamp);
+      if (selectedItems.has(key)) {
+        selectedItems.delete(key);
+      } else {
+        selectedItems.add(key);
+      }
+      updateSelectionUI();
+    };
+
+    const getSelectedFiles = () => {
+      const allFiles = getUploadedFiles();
+      return allFiles.filter(file => selectedItems.has(String(file.timestamp)));
+    };
+
+    const openSiteActionModal = ({ title, message, placeholder = '', initialValue = '', confirmLabel = 'OK', cancelLabel = 'Отмена', onConfirm, showInput = true, showTextarea = false, textareaPlaceholder = '', textareaValue = '', textareaReadOnly = false, showImage = false, imageSource = '', resizable = false }) => {
+      if (!siteActionModal) return;
+      siteActionModalTitle.textContent = title;
+      siteActionModalMessage.textContent = message;
+      siteActionModalInput.value = initialValue;
+      siteActionModalInput.placeholder = placeholder;
+      siteActionModalTextarea.value = textareaValue;
+      siteActionModalTextarea.placeholder = textareaPlaceholder;
+      siteActionModalTextarea.readOnly = textareaReadOnly;
+      const siteActionModalImage = document.getElementById('site-action-modal-image');
+      if (siteActionModalImage) {
+        siteActionModalImage.src = imageSource;
+        siteActionModalImage.style.display = showImage ? 'block' : 'none';
+      }
+      siteActionModalPrimary.textContent = confirmLabel;
+      siteActionModalSecondary.textContent = cancelLabel;
+      siteActionModalInput.style.display = showInput ? 'block' : 'none';
+      siteActionModalTextarea.style.display = showTextarea ? 'block' : 'none';
+      if (siteActionModalCard) {
+        siteActionModalCard.classList.toggle('resizable', resizable);
+        if (resizable) {
+          if (siteActionModalSavedSize.width) {
+            siteActionModalCard.style.width = siteActionModalSavedSize.width;
+          }
+          if (siteActionModalSavedSize.height) {
+            siteActionModalCard.style.height = siteActionModalSavedSize.height;
+          }
+        } else {
+          siteActionModalCard.style.width = '';
+          siteActionModalCard.style.height = '';
+        }
+      }
+      siteActionModalConfirm = () => {
+        const inputValue = showInput ? siteActionModalInput.value.trim() : '';
+        const textareaValueFinal = showTextarea ? siteActionModalTextarea.value : '';
+        if (showTextarea && showInput) {
+          onConfirm({ input: inputValue, textarea: textareaValueFinal });
+        } else if (showTextarea) {
+          onConfirm(textareaValueFinal);
+        } else {
+          onConfirm(inputValue);
+        }
+      };
+      siteActionModal.classList.add('visible');
+      if (siteActionModalCard) {
+        siteActionModalCard.style.left = '50%';
+        siteActionModalCard.style.top = '50%';
+        siteActionModalCard.style.transform = 'translate(-50%, -50%)';
+      }
+      if (showTextarea && !showInput) {
+        siteActionModalTextarea.focus();
+        siteActionModalTextarea.select();
+      } else if (showInput) {
+        siteActionModalInput.focus();
+        siteActionModalInput.select();
+      }
+    };
+
+    let siteActionModalSavedSize = { width: '', height: '' };
+    let siteActionModalResizing = false;
+
+    const closeSiteActionModal = () => {
+      if (!siteActionModal) return;
+      siteActionModal.classList.remove('visible');
+      siteActionModalConfirm = null;
+      siteActionModalInput.value = '';
+      siteActionModalTextarea.value = '';
+      if (siteActionModalCard) {
+        if (siteActionModalCard.classList.contains('resizable')) {
+          siteActionModalSavedSize.width = siteActionModalCard.style.width || '';
+          siteActionModalSavedSize.height = siteActionModalCard.style.height || '';
+        } else {
+          siteActionModalSavedSize.width = '';
+          siteActionModalSavedSize.height = '';
+          siteActionModalCard.style.width = '';
+          siteActionModalCard.style.height = '';
+        }
+        siteActionModalCard.classList.remove('resizable');
+      }
+    };
+
+    const moveSiteActionModal = event => {
+      if (!siteActionModalDragState.dragging || !siteActionModalCard) return;
+      const maxLeft = window.innerWidth - siteActionModalCard.offsetWidth - 12;
+      const maxTop = window.innerHeight - siteActionModalCard.offsetHeight - 12;
+      let left = event.clientX - siteActionModalDragState.offsetX;
+      let top = event.clientY - siteActionModalDragState.offsetY;
+      left = Math.max(12, Math.min(maxLeft, left));
+      top = Math.max(12, Math.min(maxTop, top));
+      siteActionModalCard.style.left = `${left}px`;
+      siteActionModalCard.style.top = `${top}px`;
+      siteActionModalCard.style.transform = 'none';
+    };
+
+    const stopSiteActionModalDrag = () => {
+      if (!siteActionModalDragState.dragging) return;
+      siteActionModalDragState.dragging = false;
+      if (siteActionModalCard) siteActionModalCard.classList.remove('dragging');
+      document.removeEventListener('mousemove', moveSiteActionModal);
+      document.removeEventListener('mouseup', stopSiteActionModalDrag);
+    };
+
+    const startSiteActionModalDrag = event => {
+      if (event.button !== 0 || !siteActionModalCard) return;
+      siteActionModalDragState.dragging = true;
+      const rect = siteActionModalCard.getBoundingClientRect();
+      siteActionModalDragState.offsetX = event.clientX - rect.left;
+      siteActionModalDragState.offsetY = event.clientY - rect.top;
+      siteActionModalCard.classList.add('dragging');
+      document.addEventListener('mousemove', moveSiteActionModal);
+      document.addEventListener('mouseup', stopSiteActionModalDrag);
+    };
+
+    if (siteActionModalTitle) {
+      siteActionModalTitle.style.cursor = 'grab';
+      siteActionModalTitle.addEventListener('mousedown', startSiteActionModalDrag);
+    }
+    if (siteActionModalCard) {
+      siteActionModalCard.addEventListener('click', event => event.stopPropagation());
+      siteActionModalCard.addEventListener('mousedown', event => {
+        if (!siteActionModalCard.classList.contains('resizable')) return;
+        const rect = siteActionModalCard.getBoundingClientRect();
+        const isBottomRightCorner = event.clientX >= rect.right - 16 && event.clientY >= rect.bottom - 16;
+        if (isBottomRightCorner) {
+          siteActionModalResizing = true;
+          const stopResize = () => {
+            setTimeout(() => {
+              siteActionModalResizing = false;
+            }, 0);
+          };
+          document.addEventListener('mouseup', stopResize, { once: true });
+        }
+      });
+    }
+
+    const openDeleteConfirmModal = file => {
+      openSiteActionModal({
+        title: file.type === 'folder' ? 'Удалить папку' : 'Удалить файл',
+        message: `Удалить ${file.type === 'folder' ? 'папку' : 'файл'} «${file.name}»? Это действие нельзя отменить.`,
+        confirmLabel: 'Удалить',
+        cancelLabel: 'Отмена',
+        showInput: false,
+        onConfirm: async () => {
+          await deleteUploadedItem(file.timestamp);
+          renderFilesPanel(activeView, activeOwner);
+        }
+      });
+    };
+
+    const getImageMimeType = fileName => {
+      const ext = fileName.split('.').pop().toLowerCase();
+      if (ext === 'png') return 'image/png';
+      if (ext === 'jpg' || ext === 'jpeg') return 'image/jpeg';
+      if (ext === 'gif') return 'image/gif';
+      if (ext === 'webp') return 'image/webp';
+      if (ext === 'svg') return 'image/svg+xml';
+      return 'application/octet-stream';
+    };
+
+    const isImageFile = fileName => {
+      return ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg'].some(ext => fileName.toLowerCase().endsWith(ext));
+    };
+
+    const getFileExtension = fileName => {
+      const index = fileName.lastIndexOf('.');
+      return index > 0 ? fileName.slice(index) : '';
+    };
+
+    const getFileBaseName = fileName => {
+      const index = fileName.lastIndexOf('.');
+      return index > 0 ? fileName.slice(0, index) : fileName;
+    };
+
+    const normalizeRenamedFileName = (input, originalName) => {
+      const raw = input.replace(/[\\/]/g, '').trim();
+      if (!raw) return '';
+      const base = raw.replace(/\.[^/.]+$/, '');
+      return `${base}${getFileExtension(originalName)}`;
+    };
+
+    const openTextViewerModal = async file => {
+      const isImage = isImageFile(file.name);
+      const currentUser = localStorage.getItem('chemkUser') || '';
+      const canEdit = currentUser === file.owner && file.type === 'file' && file.name.toLowerCase().endsWith('.txt');
+      const decodedText = file.content ? (() => {
+        try {
+          return decodeBase64ToString(file.content);
+        } catch {
+          return file.content;
+        }
+      })() : '';
+      const imageSource = file.content && isImage ? `data:${getImageMimeType(file.name)};base64,${file.content}` : '';
+      openSiteActionModal({
+        title: `${isImage ? 'Просмотр' : canEdit ? 'Редактировать' : 'Просмотр'} ${file.name}`,
+        message: isImage ? 'Просмотр изображения' : 'Содержимое файла',
+        showInput: false,
+        showTextarea: !isImage,
+        textareaValue: decodedText,
+        textareaPlaceholder: 'Текст файла',
+        textareaReadOnly: !canEdit,
+        showImage: isImage,
+        imageSource,
+        confirmLabel: canEdit ? 'Сохранить' : 'Закрыть',
+        cancelLabel: 'Отмена',
+        resizable: true,
+        onConfirm: async text => {
+          if (!canEdit) return;
+          const content = text ? encodeStringToBase64(text) : '';
+          await updateUploadedItem(file.timestamp, { content });
+          renderFilesPanel(activeView, activeOwner);
+        }
+      });
+    };
+
+    const openRenameModal = file => {
+      const isFile = file.type === 'file';
+      const extension = isFile ? getFileExtension(file.name) : '';
+      openSiteActionModal({
+        title: file.type === 'folder' ? 'Переименовать папку' : 'Переименовать файл',
+        message: 'Введите новое имя',
+        placeholder: 'Новое имя',
+        initialValue: isFile ? getFileBaseName(file.name) : file.name,
+        confirmLabel: 'Сохранить',
+        onConfirm: async newName => {
+          if (!newName) return;
+          const finalName = isFile ? normalizeRenamedFileName(newName, file.name) : newName;
+          if (!finalName) return;
+          await updateUploadedItem(file.timestamp, { name: finalName });
+          renderFilesPanel(activeView, activeOwner);
+        }
+      });
+    };
+
+    const createItem = itemType => {
+      const currentUser = localStorage.getItem('chemkUser') || '';
+      const currentGroup = localStorage.getItem('chemkGroup') || '';
+      openSiteActionModal({
+        title: itemType === 'folder' ? 'Создать папку' : 'Создать файл',
+        message: itemType === 'folder'
+          ? 'Введите имя папки'
+          : ' ',
+        placeholder: itemType === 'folder' ? 'Название папки' : 'Название файла',
+        confirmLabel: 'Создать',
+        showInput: true,
+        showTextarea: itemType === 'file',
+        textareaPlaceholder: itemType === 'file' ? 'Содержимое файла' : '',
+        textareaValue: '',
+        onConfirm: async values => {
+          const inputValue = typeof values === 'string' ? values : (values && values.input ? values.input : '');
+          const textareaValue = typeof values === 'object' && values ? values.textarea : '';
+          if (!inputValue) return;
+          const nameBase = inputValue.replace(/[\\/]/g, '').trim();
+          if (!nameBase) {
+            alert('Введите корректное имя файла');
+            return;
+          }
+          const fileName = itemType === 'file'
+            ? (nameBase.toLowerCase().endsWith('.txt') ? nameBase : `${nameBase}.txt`)
+            : nameBase;
+          const fileContent = itemType === 'file' ? (textareaValue || '') : '';
+          const isFavorite = activeView === 'favorites';
+          await createUploadedItems([{
+            name: fileName,
+            owner: currentUser,
+            group_name: currentGroup,
+            timestamp: Date.now(),
+            type: itemType,
+            is_favorite: isFavorite,
+            path: currentFolderPath,
+            content: fileContent ? encodeStringToBase64(fileContent) : '',
+          }]);
+          renderFilesPanel(activeView, activeOwner || currentUser);
+        }
+      });
+    };
+
+    if (createFolderButton) {
+      createFolderButton.addEventListener('click', () => createItem('folder'));
+    }
+    if (createFileButton) {
+      createFileButton.addEventListener('click', () => createItem('file'));
+    }
+    if (deleteSelectionButton) {
+      deleteSelectionButton.addEventListener('click', () => {
+        const selected = getSelectedFiles();
+        if (selected.length === 0) return;
+        openSiteActionModal({
+          title: 'Удалить выделенное',
+          message: `Удалить ${selected.length} выделенных элементов? Это действие нельзя отменить.`,
+          confirmLabel: 'Удалить',
+          cancelLabel: 'Отмена',
+          showInput: false,
+          onConfirm: async () => {
+            const timestamps = selected.map(file => file.timestamp);
+            await deleteUploadedItems(timestamps);
+            clearSelection();
+            renderFilesPanel(activeView, activeOwner);
+          }
+        });
+      });
+    }
+    if (copySelectionButton) {
+      copySelectionButton.addEventListener('click', async () => {
+        const selected = getSelectedFiles();
+        if (selected.length === 0) return;
+        const currentGroup = localStorage.getItem('chemkGroup') || '';
+        const copies = selected.map(file => {
+          const copyName = file.name.replace(/(\.[^.]*)?$/, ext => ext ? ` - копия${ext}` : ' - копия');
+          return {
+            name: copyName,
+            owner: file.owner,
+            group_name: currentGroup,
+            timestamp: Date.now() + Math.floor(Math.random() * 1000),
+            type: file.type,
+            is_favorite: file.isFavorite,
+            path: currentFolderPath,
+            content: file.content || null,
+          };
+        });
+        await createUploadedItems(copies);
+        renderFilesPanel(activeView, activeOwner);
+      });
+    }
+    if (moveSelectionButton) {
+      moveSelectionButton.addEventListener('click', () => {
+        const selected = getSelectedFiles();
+        if (selected.length === 0) return;
+        openSiteActionModal({
+          title: 'Переместить выделенное',
+          message: 'Введите путь для перемещения (оставьте пустым для корня)',
+          placeholder: 'Например: Папка/Подпапка',
+          confirmLabel: 'Переместить',
+          cancelLabel: 'Отмена',
+          onConfirm: async target => {
+            const targetPath = target ? target.replace(/\\/g, '/').trim() : '';
+            const selectedFiles = getSelectedFiles();
+            await Promise.all(selectedFiles.map(file => updateUploadedItem(file.timestamp, { path: targetPath })));
+            clearSelection();
+            renderFilesPanel(activeView, activeOwner);
+          }
+        });
+      });
+    }
+    if (clearSelectionButton) {
+      clearSelectionButton.addEventListener('click', clearSelection);
+    }
+    if (siteActionModalClose) {
+      siteActionModalClose.addEventListener('click', closeSiteActionModal);
+    }
+    if (siteActionModalSecondary) {
+      siteActionModalSecondary.addEventListener('click', closeSiteActionModal);
+    }
+    if (siteActionModalPrimary) {
+      siteActionModalPrimary.addEventListener('click', async () => {
+        if (siteActionModalConfirm) {
+          const confirmAction = siteActionModalConfirm;
+          siteActionModalConfirm = null;
+          try {
+            await confirmAction();
+          } catch (error) {
+            console.error('Ошибка при выполнении действия модального окна:', error);
+          }
+          closeSiteActionModal();
+        }
+      });
+    }
+    if (siteActionModal) {
+      siteActionModal.addEventListener('click', event => {
+        if (event.target === siteActionModal && !siteActionModalResizing) {
+          closeSiteActionModal();
+        }
+      });
+    }
+    if (siteActionModalInput) {
+      siteActionModalInput.addEventListener('keydown', event => {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          if (siteActionModalConfirm) {
+            const confirmAction = siteActionModalConfirm;
+            siteActionModalConfirm = null;
+            confirmAction();
+            closeSiteActionModal();
+          }
+        }
+        if (event.key === 'Escape') {
+          closeSiteActionModal();
+        }
+      });
+    }
+
+    if (folderBackButton) {
+      folderBackButton.addEventListener('click', () => {
+        if (!currentFolderPath) return;
+        const segments = currentFolderPath.split('/');
+        segments.pop();
+        currentFolderPath = segments.join('/');
+        renderFilesPanel(activeView, activeOwner);
+      });
+    }
+
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') {
+        if (customContextMenu && !customContextMenu.classList.contains('hidden')) {
+          hideContextMenu();
+          return;
+        }
+        if (currentFolderPath) {
+          const segments = currentFolderPath.split('/');
+          segments.pop();
+          currentFolderPath = segments.join('/');
+          renderFilesPanel(activeView, activeOwner);
+        }
+      }
+    });
+
+    const toggleSearch = () => {
+      const isActive = headerSearchContainer.classList.toggle('search-active');
+      if (isActive) {
+        headerSearchInput.focus();
+      } else {
+        headerSearchInput.value = '';
+        renderGroupUsers();
+      }
+    };
+
+    searchButton.addEventListener('click', event => {
+      event.stopPropagation();
+      toggleSearch();
+    });
+
+    headerSearchInput.addEventListener('input', async () => {
+      await renderGroupUsers(headerSearchInput.value.trim());
+    });
+
+    uploadFileButton.addEventListener('click', () => uploadFileInput.click());
+
+    favoritesButton.addEventListener('click', () => {
+      gamesMenuPanel.classList.add('hidden');
+      dashboardFilesPanel.classList.remove('hidden');
+      clearSidebarSelection();
+      favoritesButton.classList.add('active');
+      renderFilesPanel('favorites', localStorage.getItem('chemkUser') || '');
+    });
+
+    uploadFileInput.addEventListener('change', async event => {
+      const selectedFiles = Array.from(event.target.files);
+      if (selectedFiles.length === 0) return;
+      const currentUser = localStorage.getItem('chemkUser') || '';
+      const currentGroup = localStorage.getItem('chemkGroup') || '';
+      const isFavorite = activeView === 'favorites';
+      const items = await Promise.all(selectedFiles.map(async file => {
+        const arrayBuffer = await file.arrayBuffer();
+        let binary = '';
+        const bytes = new Uint8Array(arrayBuffer);
+        for (let i = 0; i < bytes.length; i += 1) {
+          binary += String.fromCharCode(bytes[i]);
+        }
+        return {
+          name: file.name,
+          owner: currentUser,
+          group_name: currentGroup,
+          timestamp: Date.now() + Math.floor(Math.random() * 1000),
+          type: 'file',
+          is_favorite: isFavorite,
+          path: currentFolderPath,
+          content: btoa(binary),
+        };
+      }));
+      await createUploadedItems(items);
+      renderFilesPanel(activeView, activeOwner || currentUser);
+      event.target.value = '';
+    });
+
+    const hideContextMenu = () => {
+      if (customContextMenu) {
+        customContextMenu.classList.add('hidden');
+        customContextMenu.innerHTML = '';
+        customContextMenu.style.left = '-9999px';
+        customContextMenu.style.top = '-9999px';
+      }
+    };
+
+    const showContextMenu = (event, items) => {
+      if (!customContextMenu) return;
+      event.preventDefault();
+      customContextMenu.innerHTML = '';
+      items.forEach(item => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'context-menu-item';
+        button.innerHTML = `${item.icon || ''}<span>${item.label}</span>`;
+        button.addEventListener('click', () => {
+          hideContextMenu();
+          item.action();
+        });
+        if (item.disabled) {
+          button.disabled = true;
+          button.style.opacity = '0.4';
+          button.style.cursor = 'default';
+        }
+        customContextMenu.appendChild(button);
+      });
+      customContextMenu.classList.remove('hidden');
+      const rect = customContextMenu.getBoundingClientRect();
+      const x = Math.min(event.clientX, window.innerWidth - rect.width - 12);
+      const y = Math.min(event.clientY, window.innerHeight - rect.height - 12);
+      customContextMenu.style.left = `${x}px`;
+      customContextMenu.style.top = `${y}px`;
+    };
+
+    const createContextMenuForFile = (event, file) => {
+      const currentUser = localStorage.getItem('chemkUser') || '';
+      const canModify = currentUser === file.owner;
+      const isFolder = file.type === 'folder';
+      const items = [];
+      if (isFolder) {
+        items.push({
+          label: 'Открыть папку',
+          icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" id="Content-Files-Archive-Books-1--Streamline-Pixel" height="32" width="32"><g><path d="M28.96 6.1V0H13.72v1.52h-6.1v1.53H3.05v10.67H1.53v3.04H0V32h32V6.1ZM7.62 30.48H1.53v-9.15h6.09Zm0 -10.67H4.58V4.57h3.04ZM9.15 3.05h4.57v1.52h-3.05v15.24H9.15Zm4.57 3.05v13.71H12.2V6.1Zm1.52 24.38H9.15v-9.15h6.09Zm15.24 0H16.77V19.81h-1.53V1.52h12.19V6.1h-4.57v1.52h7.62Z" fill="currentColor" stroke-width="1"></path><path d="M25.91 21.33h1.52v1.53h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M25.91 18.29h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M22.86 22.86h3.05v1.52h-3.05Z" fill="currentColor" stroke-width="1"></path><path d="M21.34 21.33h1.52v1.53h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M21.34 18.29h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M21.34 7.62h1.52v3.05h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M19.81 10.67h1.53v3.05h-1.53Z" fill="currentColor" stroke-width="1"></path><path d="M18.29 13.72h1.52v3.04h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M18.29 3.05h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M16.77 16.76h1.52v3.05h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M10.67 24.38h3.05v3.05h-3.05Z" fill="currentColor" stroke-width="1"></path><path d="M3.05 24.38H6.1v3.05H3.05Z" fill="currentColor" stroke-width="1"></path></g></svg>',
+          action: () => {
+            currentFolderPath = currentFolderPath ? `${currentFolderPath}/${file.name}` : file.name;
+            renderFilesPanel(activeView, activeOwner);
+          }
+        });
+      }
+      if (canModify) {
+        items.push({
+          label: isFolder ? 'Переименовать папку' : 'Переименовать файл',
+          icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" id="Design-Hilight--Streamline-Pixel" height="32" width="32"><g><path d="m30.48 4.575 -1.53 0 0 -1.53 -7.61 0 0 1.53 6.09 0 0 1.52 1.52 0 0 1.52 1.53 0 0 6.1 1.52 0 0 -7.62 -1.52 0 0 -1.52z" fill="currentColor" stroke-width="1"></path><path d="M28.95 13.715h1.53v1.52h-1.53Z" fill="currentColor" stroke-width="1"></path><path d="M27.43 15.235h1.52v1.53h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M25.91 16.765h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M24.38 18.285h1.53v1.52h-1.53Z" fill="currentColor" stroke-width="1"></path><path d="m25.91 9.145 -1.53 0 0 -1.53 -1.52 0 0 1.53 -1.52 0 0 1.52 -1.53 0 0 1.53 -1.52 0 0 1.52 -1.53 0 0 1.52 -1.52 0 0 1.53 1.52 0 0 1.52 1.53 0 0 1.52 1.52 0 0 -1.52 1.53 0 0 -1.52 1.52 0 0 -1.53 1.52 0 0 -1.52 1.53 0 0 -1.52 1.52 0 0 -1.53 -1.52 0 0 -1.52z" fill="currentColor" stroke-width="1"></path><path d="M22.86 19.805h1.52v1.53h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M21.34 21.335h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M19.81 4.575h1.53v1.52h-1.53Z" fill="currentColor" stroke-width="1"></path><path d="M18.29 22.855h3.05v1.53h-3.05Z" fill="currentColor" stroke-width="1"></path><path d="M18.29 6.095h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M16.76 21.335h1.53v1.52h-1.53Z" fill="currentColor" stroke-width="1"></path><path d="M16.76 7.615h1.53v1.53h-1.53Z" fill="currentColor" stroke-width="1"></path><path d="M15.24 24.385h3.05v1.52h-3.05Z" fill="currentColor" stroke-width="1"></path><path d="M15.24 19.805h1.52v1.53h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M15.24 9.145h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M13.72 25.905h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M13.72 18.285h1.52v1.52h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M13.72 10.665h1.52v1.53h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M12.19 24.385h1.53v1.52h-1.53Z" fill="currentColor" stroke-width="1"></path><path d="M12.19 16.765h1.53v1.52h-1.53Z" fill="currentColor" stroke-width="1"></path><path d="M12.19 12.195h1.53v1.52h-1.53Z" fill="currentColor" stroke-width="1"></path><path d="M10.67 22.855h1.52v1.53h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M10.67 13.715h1.52v3.05h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="m7.62 25.905 0 -1.52 -1.52 0 0 3.04 6.09 0 0 -1.52 -4.57 0z" fill="currentColor" stroke-width="1"></path><path d="M9.15 21.335h1.52v1.52H9.15Z" fill="currentColor" stroke-width="1"></path><path d="M9.15 16.765h1.52v3.04H9.15Z" fill="currentColor" stroke-width="1"></path><path d="M7.62 22.855h1.53v1.53H7.62Z" fill="currentColor" stroke-width="1"></path><path d="M7.62 19.805h1.53v1.53H7.62Z" fill="currentColor" stroke-width="1"></path><path d="M0 27.425h6.1v1.53H0Z" fill="currentColor" stroke-width="1"></path></g></svg>',
+          action: () => {
+            openRenameModal(file);
+          }
+        });
+        items.push({
+          label: isFolder ? 'Удалить папку' : 'Удалить файл',
+          icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" id="Interface-Essential-Bin--Streamline-Pixel" height="32" width="32"><g><path d="m25.905 8.38 0 16.76 1.53 0 0 -16.76 3.04 0 0 -1.52 -1.52 0 0 -1.53 -6.1 0 0 -3.05 -1.52 0 0 3.05 -10.67 0 0 -3.05 -1.52 0 0 3.05 -6.09 0 0 1.53 -1.53 0 0 1.52 3.05 0 0 16.76 1.52 0 0 -16.76 19.81 0z" fill="currentColor" stroke-width="1"></path><path d="M24.385 25.14h1.52v4.57h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M7.625 29.71h16.76v1.53H7.625Z" fill="currentColor" stroke-width="1"></path><path d="M21.335 11.43h1.52v12.19h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M19.815 23.62h1.52v3.04h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M15.245 11.43h1.52v15.23h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M10.665 0.76h10.67v1.52h-10.67Z" fill="currentColor" stroke-width="1"></path><path d="M10.665 23.62h1.53v3.04h-1.53Z" fill="currentColor" stroke-width="1"></path><path d="M9.145 11.43h1.52v12.19h-1.52Z" fill="currentColor" stroke-width="1"></path><path d="M6.095 25.14h1.53v4.57h-1.53Z" fill="currentColor" stroke-width="1"></path></g></svg>',
+          action: () => {
+            openDeleteConfirmModal(file);
+          }
+        });
+      }
+      if (!isFolder) {
+        items.push({
+          label: 'Скачать',
+          icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" id="Internet-Network-Computer-Download--Streamline-Pixel" height="32" width="32"><g><path d="m28.955 22.85 -25.9 0 0 -15.23 -1.53 0 0 18.28 1.53 0 0 1.53 9.14 0 0 1.52 1.52 0 0 -1.52 4.57 0 0 1.52 1.53 0 0 -1.52 9.14 0 0 -1.53 1.52 0 0 -18.28 -1.52 0 0 15.23z" fill="currentColor" stroke-width="1"></path><path d="M21.335 6.09h7.62v1.53h-7.62Z" fill="currentColor" stroke-width="1"></path><path d="m12.195 30.47 0 -1.52 -1.52 0 0 3.05 10.66 0 0 -3.05 -1.52 0 0 1.52 -7.62 0z" fill="currentColor" stroke-width="1"></path><path d="M13.715 3.05h4.57v1.52h-4.57Z" fill="currentColor" stroke-width="1"></path><path d="M13.715 0h4.57v1.52h-4.57Z" fill="currentColor" stroke-width="1"></path><path d="m16.765 19.81 0 -1.53 1.52 0 0 -1.52 1.53 0 0 -1.52 1.52 0 0 -1.53 -3.05 0 0 -7.62 -4.57 0 0 7.62 -3.04 0 0 1.53 1.52 0 0 1.52 1.52 0 0 1.52 1.53 0 0 1.53 1.52 0z" fill="currentColor" stroke-width="1"></path><path d="M3.055 6.09h7.62v1.53h-7.62Z" fill="currentColor" stroke-width="1"></path></g></svg>',
+          action: () => {
+            if (!file.content) {
+              alert('Содержимое файла отсутствует.');
+              return;
+            }
+            try {
+              const text = decodeBase64ToString(file.content);
+              const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+              const url = URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = file.name;
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              URL.revokeObjectURL(url);
+            } catch (error) {
+              console.error('Ошибка при скачивании файла:', error);
+              alert('Не удалось скачать файл.');
+            }
+          }
+        });
+      }
+      showContextMenu(event, items);
+    };
+
+    const createContextMenuForEmptyArea = event => {
+      showContextMenu(event, [
+        {
+          label: 'Создать папку',
+          icon: '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M3 4v16h18V8L15 4H3zm2 2h8l4 4H5V6zm0 10v-6h14v6H5z"/></svg>',
+          action: () => createItem('folder')
+        },
+        {
+          label: 'Создать файл',
+          icon: '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zM6 20V4h7v5h5v11H6z"/></svg>',
+          action: () => createItem('file')
+        },
+        {
+          label: 'Загрузить файл',
+          icon: '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M5 20h14v-2H5v2zm7-18l-7 7h4v6h6v-6h4l-7-7z"/></svg>',
+          action: () => uploadFileButton.click()
+        }
+      ]);
+    };
+
+    if (dashboardFilesList) {
+      dashboardFilesList.addEventListener('contextmenu', event => {
+        const fileCard = event.target.closest('.file-card');
+        if (fileCard) {
+          const fileTimestamp = fileCard.dataset.timestamp;
+          const file = getUploadedFiles().find(storedFile => String(storedFile.timestamp) === fileTimestamp && storedFile.owner === activeOwner && storedFile.path === currentFolderPath);
+          if (file) {
+            createContextMenuForFile(event, file);
+            return;
+          }
+        }
+        createContextMenuForEmptyArea(event);
+      });
+    }
+
+    document.addEventListener('click', event => {
+      if (!headerMenu.contains(event.target) && !headerMenuPanel.contains(event.target)) {
+        headerMenuPanel.classList.remove('visible');
+      }
+      if (!headerSearchContainer.contains(event.target)) {
+        headerSearchContainer.classList.remove('search-active');
+      }
+      if (!customContextMenu.contains(event.target)) {
+        hideContextMenu();
+      }
+    });
+
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') {
+        if (customContextMenu && !customContextMenu.classList.contains('hidden')) {
+          hideContextMenu();
+          return;
+        }
+        if (currentFolderPath) {
+          const segments = currentFolderPath.split('/');
+          segments.pop();
+          currentFolderPath = segments.join('/');
+          renderFilesPanel(activeView, activeOwner);
+        }
+      }
+    });
+
+    const enableFullscreenOnGameOpen = () => {
+      document.querySelectorAll('.game-card').forEach(card => {
+        card.addEventListener('click', event => {
+          event.preventDefault();
+          const targetHref = card.href;
+          document.documentElement.requestFullscreen?.().catch(() => {});
+          window.location.href = targetHref;
+        });
+      });
+    };
+
+    enableFullscreenOnGameOpen();
+    initState().catch(error => console.error(error));
+  </script>
+</body>
+</html>

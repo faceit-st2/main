@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <base href="https://cdn.jsdelivr.net/gh/abisdbest/classroom.google.com@45b2d69c626dc365753f6922d2c48c4075683ef5/drive.google.com/escape%20road/">
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>CHEMK — Погоня</title>
+  <link rel="shortcut icon" href="icon.png">
+  <link rel="stylesheet" href="TemplateData/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+  <script>eruda.init()</script>
+  <style>
+    @font-face {
+      font-family: "Akedopikuseru";
+      src: url("Akedopikuseru-Regular.otf") format("opentype");
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    html, body, * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding-top: 60px;
+      background: #000;
+      color: #fff;
+      font-family: "Akedopikuseru", sans-serif;
+      overflow: hidden;
+    }
+
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 18px;
+      background: rgba(0, 0, 0, 0.6);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      z-index: 20;
+    }
+
+    .top-bar h1 {
+      margin: 0;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: #9eff8f;
+    }
+
+    .top-bar a {
+      color: #63ff82;
+      text-decoration: none;
+      padding: 8px 14px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    #unity-container,
+    #loading-cover {
+      position: absolute;
+      inset: 60px 0 0 0;
+      width: 100%;
+      height: calc(100% - 60px);
+      background: #000;
+      overflow: hidden;
+    }
+
+    #unity-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    #loading-cover {
+      display: none;
+      background: black;
+      z-index: 15;
+    }
+
+    #unity-loading-bar {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #logo-canvas {
+      position: absolute;
+      background-color: black;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    #azlogo {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      max-width: 280px;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body class="dark">
+  <div class="top-bar">
+    <h1>Погоня</h1>
+    <a href="Files.html" id="exit-link">Выход</a>
+  </div>
+  <div id="unity-container" class="unity-desktop"><p style="opacity: 0;position: absolute;">_</p>
+    <canvas id="unity-canvas"></canvas>
+  </div>
+  <div id="loading-cover">
+    <div id="unity-loading-bar">
+      <canvas id="logo-canvas">
+        <img src="loading.png" id="ld_bg">
+        <img src="car-icon.png" id="ld_car">
+      </canvas>
+    </div>
+  </div>
+  <img id="azlogo" class="az" src="az_logo.png">
+  <script type="57480f3f31f76c75506c83a0-text/javascript">
+    const container = document.querySelector("#unity-container");
+    const canvas = document.querySelector("#unity-canvas");
+    const loadingCover = document.querySelector("#loading-cover");
+    const fullscreenButton = document.querySelector("#unity-fullscreen-button");
+
+    const buildUrl = "TemplateData";
+    const loaderUrl = buildUrl + "/loader.js";
+    const config = {
+      dataUrl: buildUrl + "/data.unityweb",
+      frameworkUrl: buildUrl + "/framework.js.unityweb",
+      codeUrl: buildUrl + "/wasm.unityweb",
+      streamingAssetsUrl: "StreamingAssets",
+      companyName: "1games.io",
+      productName: "Escape Road",
+      productVersion: "2.0",
+    };
+
+    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+      container.className = "unity-mobile";
+      config.devicePixelRatio = 1;
+    }
+
+    function delay(ms) {
+      return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+      });
+    }
+
+    async function load() {
+      var az_logo = document.getElementById('azlogo');
+      az_logo.style.opacity = 0;
+      logo_loaded = true;
+      az_logo.style.display = 'none';
+      logo_loaded = false;
+      createUnityInstance(canvas, config, (progress) => {
+        logo_loading_percent = progress;
+        drawCanvas(progress);
+      }).then((unityInstance) => {
+        window.unityInstance = unityInstance;
+        setTimeout(() => {
+          loadingCover.style.display = "none";
+          logo_loaded = true;
+          window.focus();
+        }, 2000);
+      }).catch((message) => {
+        alert(message);
+      });
+    }
+
+    loadingCover.style.display = "";
+
+    var script = document.createElement("script");
+    script.src = loaderUrl;
+    script.onload = () => {
+      load();
+    };
+
+    var logo_loaded = false;
+    var logo_loading_percent = 0;
+
+    window.onresize = () => {
+      drawCanvas(logo_loading_percent);
+    }
+    window.onload = () => {
+      drawCanvas(logo_loading_percent);
+    }
+
+    var logo_canvas = document.getElementById("logo-canvas");
+    function drawCanvas(_percent = 0) {
+      if (logo_loaded) {
+        return;
+      }
+      resizeLogoCanvas();
+      var ctx = logo_canvas.getContext("2d");
+      var ld_bg = document.getElementById("ld_bg");
+      var ld_car = document.getElementById("ld_car");
+
+      var _sw = logo_canvas.width / 1920;
+      var _sh = logo_canvas.height / 1080;
+
+      if (_percent > 1) {
+        _percent = 1;
+      }
+
+      var bgbar_H = 86;
+      var bgbar_W = 1383;
+      var fillbar_H = 55;
+      var fillbar_W = 1345;
+      var maskbar_H = 55;
+      var maskbar_W = 1350;
+      var bgbar_mask_H = 86;
+      var bgbar_mask_W = 1383;
+
+      var posshowbar_Y = 200;
+      var posbgbar_X = (1920 - bgbar_W) / 2;
+      var posbgbar_Y = posshowbar_Y;
+      var posfillbar_X = (1920 - fillbar_W) / 2;
+      var posfillbar_Y = posshowbar_Y - 15;
+      var posmaskbar_X = (1920 - maskbar_W) / 2;
+      var posmaskbar_Y = posshowbar_Y - 15;
+      var _fl = 0;
+      var _fl1 = posmaskbar_X + _percent * maskbar_W;
+      var _fw = maskbar_W - _percent * maskbar_W;
+
+      ctx.drawImage(ld_bg, 0, 0, logo_canvas.width, logo_canvas.height);
+      ctx.fillStyle = "#977e21";
+      var _lw = 700;
+      var _lh = 50;
+      ctx.fillRect((1920 - _lw) * 0.5 * _sw, (1080 - 150) * _sh, _lw * _sw, _lh * _sh);
+      ctx.fillStyle = "#fad234";
+      var _pad = 5;
+      var _pw = (_lw - _pad * 2);
+      var _ph = _lh - _pad * 2;
+      var _px = (1920 - _pw) * 0.5;
+      ctx.fillRect(_px * _sw, (1080 - 150 + _pad) * _sh, _pw * _percent * _sw, _ph * _sh);
+      var _car_x = _px + _pw * _percent - 100;
+      if (_car_x < _px) {
+        _car_x = _px;
+      }
+      ctx.font = "18px myFirstFont";
+      const match = /(?<value>\d+\.?\d*)/;
+      const setFontSize = (size) => ctx.font = ctx.font.replace(match, size);
+      setFontSize(35 * _sh);
+      ctx.textAlign = "center";
+      ctx.fillStyle = "#fff";
+      ctx.shadowColor = "black";
+      ctx.shadowOffsetY = 2;
+      var new_per = parseInt(_percent * 100);
+      ctx.fillText("" + new_per + "%", logo_canvas.width / 2, logo_canvas.height / 2 + _sh * 425);
+    }
+    function resizeLogoCanvas() {
+      var _w = window.innerWidth;
+      var _h = window.innerHeight;
+      var _nw = _h * 16 / 9;
+      if (_nw <= _w) {
+        logo_canvas.width = _nw;
+        logo_canvas.height = _h;
+      }
+      else {
+        logo_canvas.width = _w;
+        logo_canvas.height = _w * 9 / 16;
+      }
+    }
+
+    document.body.appendChild(script);
+
+    const exitAnchor = document.getElementById('exit-link');
+    if (exitAnchor) {
+      exitAnchor.addEventListener('click', (event) => {
+        event.preventDefault();
+        window.top.location.href = window.location.href.replace(/[^/\\?#]*$/, 'Files.html');
+      });
+    }
+  </script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js" type="57480f3f31f76c75506c83a0-text/javascript"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore-compat.js" type="57480f3f31f76c75506c83a0-text/javascript"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-auth-compat.js" type="57480f3f31f76c75506c83a0-text/javascript"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-analytics-compat.js" type="57480f3f31f76c75506c83a0-text/javascript"></script>
+  <script type="57480f3f31f76c75506c83a0-module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-analytics.js";
+    import { getAuth  } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
+    const firebaseConfig = {
+      apiKey: "AIzaSyC2RwMfh0GMuQMtQdijjUo-MEffB4N9xVY",
+      authDomain: "escape-road-gm1.firebaseapp.com",
+      projectId: "escape-road-gm1",
+      storageBucket: "escape-road-gm1.appspot.com",
+      messagingSenderId: "713881704715",
+      appId: "1:713881704715:web:615cc93a73d9814b24ea0e",
+      measurementId: "G-E8C3TNJE0S"
+    };
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function(){dataLayer.push(arguments);}
+    window.gtag("config", firebaseConfig.measurementId, {
+      cookie_domain: location.hostname,
+      cookie_flags: "SameSite=None;Secure",
+    });
+    const app = firebase.initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+  </script>
+  <script src="rocket-loader.min.js" data-cf-settings="57480f3f31f76c75506c83a0-|49" defer></script>
+</body>
+</html>

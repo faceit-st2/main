@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CHEMK — Counter Strike</title>
+  <style>
+    @font-face {
+      font-family: "Akedopikuseru";
+      src: url("Akedopikuseru-Regular.otf") format("opentype");
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    html, body, * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      font-family: "Akedopikuseru", sans-serif;
+    }
+
+    html, body {
+      overflow: hidden;
+      background: #020402;
+      color: #c8f8c2;
+    }
+
+    body {
+      min-height: 100vh;
+      padding-top: 60px;
+    }
+
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 18px;
+      background: rgba(0, 0, 0, 0.6);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      z-index: 20;
+    }
+
+    .top-bar h1 {
+      margin: 0;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: #9eff8f;
+    }
+
+    .top-bar a {
+      color: #63ff82;
+      text-decoration: none;
+      padding: 8px 14px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .game-wrapper {
+      position: absolute;
+      inset: 60px 0 0 0;
+      background: #000;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <h1>Counter Strike</h1>
+    <a href="Files.html">Выход</a>
+  </div>
+  <div class="game-wrapper">
+    <iframe src="https://down-cs.net/game.php" allowfullscreen allow="fullscreen"></iframe>
+  </div>
+  <script>
+    const requestFullscreenOnInteraction = () => {
+      const enterFullscreen = () => {
+        document.documentElement.requestFullscreen?.().catch(() => {});
+        document.removeEventListener('click', enterFullscreen);
+        document.removeEventListener('keydown', enterFullscreen);
+      };
+      document.addEventListener('click', enterFullscreen);
+      document.addEventListener('keydown', enterFullscreen);
+    };
+    requestFullscreenOnInteraction();
+  </script>
+</body>
+</html>
