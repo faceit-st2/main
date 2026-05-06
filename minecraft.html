@@ -3,651 +3,95 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cubed</title>
+  <title>CHEMK — Geometry Dash</title>
   <style>
-    body, html {
+    @font-face {
+      font-family: "Akedopikuseru";
+      src: url("Akedopikuseru-Regular.otf") format("opentype");
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    html, body {
       margin: 0;
       padding: 0;
+      width: 100%;
       height: 100%;
       overflow: hidden;
-      font-family: system-ui, sans-serif;
-      background: #000;
-      color: white;
+      background: #020402;
+      color: #c8f8b2;
+      font-family: "Akedopikuseru", sans-serif;
     }
 
-    #menuScreen {
-      width: 100%;
-      height: 100%;
-      background-image: url("https://wallpaperaccess.com/full/171195.jpg");
-      background-size: cover;
-      background-position: center;
-      position: relative;
-    }
-
-    .title {
-      text-align: center;
-      color: white;
-      font-size: 4rem;
-      margin-top: 20px;
-      text-shadow: 0 0 15px black;
-    }
-
-    .center-box {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 220px;
-      height: 120px;
-      transform: translate(-50%, -50%);
-      background: linear-gradient(to bottom, #1a1a1a, #000);
-      border: 3px solid black;
-      border-radius: 12px;
+    body {
       display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      padding-bottom: 15px;
-    }
+      flex-direction: column;      padding-top: 60px;    }
 
-    .center-text {
-      color: white;
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .friends-panel {
-      position: absolute;
-      right: 20px;
-      top: 80px;
-      width: 220px;
-      background: rgba(0,0,0,0.55);
-      padding: 15px;
-      border-radius: 10px;
-      color: white;
-    }
-
-    .settings-icon {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      width: 48px;
-      cursor: pointer;
-    }
-
-    .settings-window {
-      position: absolute;
-      top: 120px;
-      left: 20px;
-      width: 260px;
-      background: rgba(0,0,0,0.75);
-      padding: 20px;
-      border-radius: 12px;
-      color: white;
-      display: none;
-      z-index: 5;
-    }
-
-    #loadingScreen {
-      display: none;
-      position: absolute;
-      inset: 0;
-      background: rgba(0,0,0,0.4);
-      color: white;
-      font-size: 2rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 16px;
-      z-index: 10;
-    }
-
-    .loading-percent {
-      font-size: 1.5rem;
-    }
-
-    #gameScreen {
-      display: none;
-      width: 100%;
-      height: 100%;
-      background: #2196F3;
-      position: relative;
-    }
-
-    #leaveBtn {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background: red;
-      color: white;
-      border: 3px solid black;
-      padding: 12px 20px;
-      font-size: 1rem;
-      cursor: pointer;
-      z-index: 10;
-    }
-
-    #gameCanvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-
-    #crosshair {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 16px;
-      height: 16px;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-      z-index: 6;
-    }
-
-    #crosshair::before,
-    #crosshair::after {
-      content: "";
-      position: absolute;
-      background: white;
-    }
-
-    #crosshair::before {
-      width: 2px;
-      height: 16px;
-      left: 7px;
+    .top-bar {
+      position: fixed;
       top: 0;
-    }
-
-    #crosshair::after {
-      width: 16px;
-      height: 2px;
-      top: 7px;
       left: 0;
-    }
-
-    #inventoryBar {
-      position: absolute;
-      bottom: 12px;
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 6px;
-      background: rgba(0, 0, 0, 0.6);
-      border-radius: 6px;
-      border: 2px solid rgba(255,255,255,0.3);
+      right: 0;
+      height: 60px;
       display: flex;
-      gap: 4px;
-      z-index: 5;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 18px;
+      background: rgba(0, 0, 0, 0.6);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      z-index: 20;
     }
 
-    .slot {
-      width: 40px;
-      height: 40px;
-      background: rgba(20,20,20,0.9);
-      border: 2px solid rgba(255,255,255,0.15);
-      border-radius: 4px;
-      position: relative;
-      box-sizing: border-box;
-      cursor: pointer;
+    .top-bar h1 {
+      margin: 0;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: #9eff8f;
     }
 
-    .slot.selected {
-      border-color: #fff;
-      box-shadow: 0 0 6px rgba(255,255,255,0.7);
+    .top-bar a {
+      color: #63ff82;
+      text-decoration: none;
+      padding: 8px 14px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.2);
     }
 
-    .slot-icon {
-      width: 70%;
-      height: 70%;
-      border-radius: 3px;
+    .game-wrapper {
       position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+      inset: 60px 0 0 0;
+      background: #000;
     }
 
-    #chatContainer {
-      position: absolute;
-      left: 10px;
-      bottom: 80px;
-      width: 260px;
-      background: rgba(0,0,0,0.5);
-      border-radius: 8px;
-      overflow: hidden;
-      z-index: 5;
-    }
-
-    #chatMessages {
-      max-height: 160px;
-      overflow-y: auto;
-      padding: 6px;
-      font-size: 0.8rem;
-      color: #fff;
-    }
-
-    #chatInput {
+    iframe {
       width: 100%;
+      height: 100%;
       border: none;
-      padding: 6px;
-      font-size: 0.8rem;
-      outline: none;
-      background: rgba(0,0,0,0.8);
-      color: #fff;
+      display: block;
     }
   </style>
 </head>
 <body>
-  <!-- MAIN MENU -->
-  <div id="menuScreen">
-    <h1 class="title">Cubed</h1>
-
-    <div class="center-box" id="centerBox">
-      <div class="center-text" id="startBtn">Survival</div>
-    </div>
-
-    <div class="friends-panel">
-      <h2>Friends</h2>
-      <p>No friends yet</p>
-      <p>No friend requests</p>
-    </div>
-
-    <img 
-      src="https://naicaonline.com/assets/img/header/icon_connexion.png"
-      class="settings-icon"
-      id="settingsBtn"
-      alt="Settings"
-    />
-
-    <div class="settings-window" id="settingsWindow">
-      <h2>Settings</h2>
-      <label>Change Username</label>
-      <input type="text" id="usernameInput" placeholder="Username" />
-      <button id="saveNameBtn">Save</button>
-    </div>
+  <div class="top-bar">
+    <h1>MINECRAFT</h1>
+    <a href="Files.html">Выход</a>
   </div>
-
-  <!-- LOADING SCREEN -->
-  <div id="loadingScreen">
-    <div class="loading-text">loading..</div>
-    <div class="loading-percent" id="loadingPercent">0%</div>
+  <div class="game-wrapper">
+    <iframe src="https://classic.minecraft.net/" allowfullscreen allow="fullscreen"></iframe>
   </div>
-
-  <!-- GAME SCREEN -->
-  <div id="gameScreen">
-    <button id="leaveBtn">Leave</button>
-    <canvas id="gameCanvas"></canvas>
-
-    <!-- CROSSHAIR -->
-    <div id="crosshair"></div>
-
-    <!-- INVENTORY -->
-    <div id="inventoryBar">
-      <div class="slot selected" data-block="grass">Grass</div>
-      <div class="slot" data-block="dirt">Dirt</div>
-      <div class="slot" data-block="stone">Stone</div>
-      <div class="slot" data-block="log">Log</div>
-      <div class="slot" data-block="leaves">Leaves</div>
-    </div>
-
-    <!-- CHAT -->
-    <div id="chatContainer">
-      <div id="chatMessages"></div>
-      <input id="chatInput" type="text" placeholder="Press Enter to chat..." />
-    </div>
-  </div>
-
-  <!-- THREE.JS -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script>
-    // UI ELEMENTS
-    const menuScreen = document.getElementById("menuScreen");
-    const loadingScreen = document.getElementById("loadingScreen");
-    const gameScreen = document.getElementById("gameScreen");
-    const loadingPercent = document.getElementById("loadingPercent");
-    const startBtn = document.getElementById("startBtn");
-    const leaveBtn = document.getElementById("leaveBtn");
-
-    const inventorySlots = document.querySelectorAll(".slot");
-    const chatMessages = document.getElementById("chatMessages");
-    const chatInput = document.getElementById("chatInput");
-
-    let selectedBlock = "grass";
-
-    // add simple colored icons to slots
-    inventorySlots.forEach(slot => {
-      const type = slot.dataset.block;
-      const icon = document.createElement("div");
-      icon.className = "slot-icon";
-      const COLORS = {
-        grass: "#65B668",
-        dirt: "#AA958D",
-        stone: "#A4B4BC",
-        log: "#A1887F",
-        leaves: "#4CAF50"
+    const requestFullscreenOnInteraction = () => {
+      const enterFullscreen = () => {
+        document.documentElement.requestFullscreen?.().catch(() => {});
+        document.removeEventListener('click', enterFullscreen);
+        document.removeEventListener('keydown', enterFullscreen);
       };
-      icon.style.background = COLORS[type] || "#fff";
-      slot.appendChild(icon);
-    });
-
-    // INVENTORY SELECTION (mouse)
-    inventorySlots.forEach((slot, index) => {
-      slot.addEventListener("click", () => {
-        selectHotbarIndex(index);
-      });
-    });
-
-    // INVENTORY SELECTION (number keys 1–5)
-    function selectHotbarIndex(i) {
-      inventorySlots.forEach(s => s.classList.remove("selected"));
-      const slot = inventorySlots[i];
-      if (!slot) return;
-      slot.classList.add("selected");
-      selectedBlock = slot.dataset.block;
-    }
-
-    document.addEventListener("keydown", e => {
-      if (document.activeElement === chatInput) return;
-      if (e.key >= "1" && e.key <= "5") {
-        const idx = parseInt(e.key, 10) - 1;
-        selectHotbarIndex(idx);
-      }
-    });
-
-    // CHAT
-    function addChatMessage(text) {
-      const div = document.createElement("div");
-      div.textContent = text;
-      chatMessages.appendChild(div);
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-
-    chatInput.addEventListener("keydown", e => {
-      if (e.key === "Enter" && chatInput.value.trim() !== "") {
-        addChatMessage(chatInput.value.trim());
-        chatInput.value = "";
-      }
-    });
-
-    document.addEventListener("keydown", e => {
-      if (e.key === "Enter" && document.pointerLockElement === gameScreen && document.activeElement !== chatInput) {
-        document.exitPointerLock();
-        chatInput.focus();
-      } else if (e.key === "Escape" && document.activeElement === chatInput) {
-        chatInput.blur();
-        gameScreen.requestPointerLock();
-      }
-    });
-
-    // START BUTTON → LOADING → GAME
-    startBtn.addEventListener("click", () => {
-      menuScreen.style.display = "none";
-      loadingScreen.style.display = "flex";
-
-      let progress = 0;
-      const interval = setInterval(() => {
-        progress += 1;
-        loadingPercent.textContent = progress + "%";
-
-        if (progress >= 100) {
-          clearInterval(interval);
-          loadingScreen.style.display = "none";
-          startGame();
-        }
-      }, 30);
-    });
-
-    // LEAVE BUTTON
-    let animationLoop;
-    leaveBtn.addEventListener("click", () => {
-      cancelAnimationFrame(animationLoop);
-      gameScreen.style.display = "none";
-      menuScreen.style.display = "block";
-    });
-
-    // THREE.JS GAME ENGINE
-    let scene, camera, renderer;
-    let keys = {};
-
-    let velocityY = 0;
-    const gravity = -0.004;
-    let canJump = true;
-
-    const blockSize = 1;
-    const chunkSize = 16;
-    const chunksVisible = 4;
-    const worldSize = chunkSize * chunksVisible;
-
-    const blocks = new Map();
-    const blockGroup = new THREE.Group();
-    let raycaster = new THREE.Raycaster();
-    let mouse = new THREE.Vector2(0, 0);
-
-    const playerHalfWidth = 0.5;
-    const playerHeight = 2.0;
-
-    let playerPos = new THREE.Vector3(0, 10, 0);
-    const eyeOffset = 1;
-    const spawnPos = new THREE.Vector3(0, 10, 0);
-
-    const COLORS = {
-      grass: "#65B668",
-      dirt: "#AA958D",
-      stone: "#A4B4BC",
-      bedrock: "#263238",
-      log: "#A1887F",
-      leaves: "#4CAF50"
+      document.addEventListener('click', enterFullscreen);
+      document.addEventListener('keydown', enterFullscreen);
     };
-
-    function key(x, y, z) {
-      return `${x},${y},${z}`;
-    }
-
-    function createBlock(x, y, z, type, unbreakable = false) {
-      const color = COLORS[type] || "#ffffff";
-      const geom = new THREE.BoxGeometry(blockSize, blockSize, blockSize);
-      const mat = new THREE.MeshLambertMaterial({ color });
-      const mesh = new THREE.Mesh(geom, mat);
-      mesh.position.set(x * blockSize, y * blockSize, z * blockSize);
-      blockGroup.add(mesh);
-      blocks.set(key(x, y, z), { mesh, type, unbreakable });
-    }
-
-    function isSolid(x, y, z) {
-      return blocks.has(`${x},${y},${z}`);
-    }
-
-    function generateWorld() {
-      scene.add(blockGroup);
-      const half = worldSize / 2;
-      for (let x = -half; x < half; x++) {
-        for (let z = -half; z < half; z++) {
-          createBlock(x, 0, z, "bedrock", true);
-          for (let y = 1; y <= 3; y++) createBlock(x, y, z, "stone");
-          for (let y = 4; y <= 5; y++) createBlock(x, y, z, "dirt");
-          createBlock(x, 6, z, "grass");
-        }
-      }
-      for (let i = 0; i < 16; i++) {
-        const tx = Math.floor(Math.random() * worldSize) - half;
-        const tz = Math.floor(Math.random() * worldSize) - half;
-        if (Math.abs(tx) < 4 && Math.abs(tz) < 4) continue;
-        const baseY = 7;
-        for (let y = baseY; y < baseY + 3; y++) {
-          createBlock(tx, y, tz, "log");
-        }
-        for (let x = tx - 1; x <= tx + 1; x++) {
-          for (let y = baseY + 3; y <= baseY + 4; y++) {
-            for (let z = tz - 1; z <= tz + 1; z++) {
-              if (!blocks.has(key(x, y, z))) {
-                createBlock(x, y, z, "leaves");
-              }
-            }
-          }
-        }
-      }
-    }
-
-    function startGame() {
-      gameScreen.style.display = "block";
-      scene = new THREE.Scene();
-      scene.background = new THREE.Color("#2196F3");
-      camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-      playerPos.copy(spawnPos);
-      camera.position.copy(playerPos).add(new THREE.Vector3(0, eyeOffset, 0));
-      renderer = new THREE.WebGLRenderer({
-        canvas: document.getElementById("gameCanvas"),
-        antialias: false
-      });
-      renderer.setPixelRatio(1);
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      const light = new THREE.DirectionalLight(0xffffff, 1);
-      light.position.set(10, 20, 10);
-      scene.add(light);
-      const ambient = new THREE.AmbientLight(0xffffff, 0.4);
-      scene.add(ambient);
-      generateWorld();
-      document.addEventListener("keydown", e => { keys[e.key] = true; });
-      document.addEventListener("keyup", e => { keys[e.key] = false; });
-      gameScreen.addEventListener("click", () => {
-        if (document.activeElement !== chatInput) {
-          gameScreen.requestPointerLock();
-        }
-      });
-      document.addEventListener("mousemove", e => {
-        if (document.pointerLockElement === gameScreen) {
-          camera.rotation.y -= e.movementX * 0.002;
-          camera.rotation.x -= e.movementY * 0.002;
-          const maxPitch = Math.PI / 3;
-          camera.rotation.x = Math.max(-maxPitch, Math.min(maxPitch, camera.rotation.x));
-          camera.rotation.z = 0;
-        }
-      });
-      gameScreen.addEventListener("mousedown", e => {
-        if (document.activeElement === chatInput) return;
-        if (e.button === 0) {
-          breakBlock();
-        } else if (e.button === 2) {
-          placeBlock();
-        }
-      });
-      gameScreen.addEventListener("contextmenu", e => e.preventDefault());
-      window.addEventListener("mousemove", () => {
-        mouse.x = 0;
-        mouse.y = 0;
-      });
-      animate();
-    }
-
-    function breakBlock() {
-      raycaster.setFromCamera(mouse, camera);
-      const intersects = raycaster.intersectObjects(blockGroup.children, false);
-      if (intersects.length > 0) {
-        const hit = intersects[0].object;
-        for (let [k, v] of blocks.entries()) {
-          if (v.mesh === hit) {
-            if (v.unbreakable) return;
-            blockGroup.remove(v.mesh);
-            v.mesh.geometry.dispose();
-            v.mesh.material.dispose();
-            blocks.delete(k);
-            break;
-          }
-        }
-      }
-    }
-
-    function placeBlock() {
-      raycaster.setFromCamera(mouse, camera);
-      const intersects = raycaster.intersectObjects(blockGroup.children, false);
-      if (intersects.length > 0) {
-        const hit = intersects[0];
-        const normal = hit.face.normal.clone();
-        const pos = hit.object.position.clone().add(normal.multiplyScalar(blockSize));
-        const x = Math.round(pos.x / blockSize);
-        const y = Math.round(pos.y / blockSize);
-        const z = Math.round(pos.z / blockSize);
-        const k = key(x, y, z);
-        if (!blocks.has(k)) {
-          createBlock(x, y, z, selectedBlock);
-        }
-      }
-    }
-
-    function collides(pos) {
-      const minX = Math.floor(pos.x - playerHalfWidth);
-      const maxX = Math.floor(pos.x + playerHalfWidth);
-      const minZ = Math.floor(pos.z - playerHalfWidth);
-      const maxZ = Math.floor(pos.z + playerHalfWidth);
-      const minY = Math.floor(pos.y);
-      const maxY = Math.floor(pos.y + playerHeight);
-      for (let x = minX; x <= maxX; x++) {
-        for (let y = minY; y <= maxY; y++) {
-          for (let z = minZ; z <= maxZ; z++) {
-            if (isSolid(x, y, z)) return true;
-          }
-        }
-      }
-      return false;
-    }
-
-    function moveAxis(pos, delta, axis) {
-      const newPos = pos.clone();
-      newPos[axis] += delta;
-      if (!collides(newPos)) return newPos;
-      if (axis === "x" || axis === "z") {
-        const stepPos = pos.clone();
-        stepPos.y += 1;
-        stepPos[axis] += delta;
-        if (!collides(stepPos)) return stepPos;
-      }
-      return pos;
-    }
-
-    function animate() {
-      animationLoop = requestAnimationFrame(animate);
-      let pos = playerPos.clone();
-      const speed = 0.12;
-      if (document.activeElement !== chatInput) {
-        let dx = 0;
-        let dz = 0;
-        if (keys["w"]) {
-          dx -= Math.sin(camera.rotation.y) * speed;
-          dz -= Math.cos(camera.rotation.y) * speed;
-        }
-        if (keys["s"]) {
-          dx += Math.sin(camera.rotation.y) * speed;
-          dz += Math.cos(camera.rotation.y) * speed;
-        }
-        if (keys["a"]) {
-          dx -= Math.cos(camera.rotation.y) * speed;
-          dz += Math.sin(camera.rotation.y) * speed;
-        }
-        if (keys["d"]) {
-          dx += Math.cos(camera.rotation.y) * speed;
-          dz -= Math.sin(camera.rotation.y) * speed;
-        }
-        pos = moveAxis(pos, dx, "x");
-        pos = moveAxis(pos, dz, "z");
-        if (keys[" "] && canJump) {
-          velocityY = 0.16;
-          canJump = false;
-        }
-      }
-      velocityY += gravity;
-      pos = moveAxis(pos, velocityY, "y");
-      const below = pos.clone();
-      below.y -= 0.05;
-      if (collides(below) && velocityY <= 0) {
-        pos.y = Math.floor(pos.y);
-        velocityY = 0;
-        canJump = true;
-      }
-      if (pos.y < -100) {
-        pos.copy(spawnPos);
-        velocityY = 0;
-      }
-      playerPos.copy(pos);
-      camera.position.copy(playerPos).add(new THREE.Vector3(0, eyeOffset, 0));
-      renderer.render(scene, camera);
-    }
+    requestFullscreenOnInteraction();
   </script>
 </body>
 </html>
